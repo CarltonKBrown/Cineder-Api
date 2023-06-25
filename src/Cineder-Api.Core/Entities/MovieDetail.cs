@@ -32,6 +32,7 @@ namespace Cineder_Api.Core.Entities
         public double VoteAverage { get; protected set; }
         public IEnumerable<Video> Videos { get; protected set; }
         public IEnumerable<Cast> Casts { get; protected set; }
+        
         public override string ToString()
         {
             var opt = new JsonSerializerOptions() { WriteIndented = true };

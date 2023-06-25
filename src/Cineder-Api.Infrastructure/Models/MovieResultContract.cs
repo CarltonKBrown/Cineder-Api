@@ -1,0 +1,86 @@
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Cineder_Api.Core.Entities;
+using Cineder_Api.Infrastructure.Models;
+
+namespace Cineder_Api.Infrastructure;
+
+internal class MovieResultContract : BaseContract
+{
+    public MovieResultContract(long id, string posterPath, bool adult, string overview, string releaseDate, IEnumerable<long> genreIds, string originalTitle, string originalLanguage, string title, string backdropPath, double popularity, int voteCount, bool video, double voteAverage) : base(id)
+    {
+        PosterPath = posterPath;
+        Adult = adult;
+        Overview = overview;
+        ReleaseDate = releaseDate;
+        GenreIds = genreIds;
+        OriginalTitle = originalTitle;
+        OriginalLanguage = originalLanguage;
+        Title = title;
+        BackdropPath = backdropPath;
+        Popularity = popularity;
+        VoteCount = voteCount;
+        Video = video;
+        VoteAverage = voteAverage;
+    }
+
+    public MovieResultContract() : this(0, string.Empty, false, string.Empty, string.Empty, Enumerable.Empty<long>(), string.Empty, string.Empty, string.Empty, string.Empty, 0.0, 0, false, 0.0) { }
+
+    [JsonPropertyName("poster_path")]
+    public string PosterPath { get; set; }
+
+    [JsonPropertyName("adult")]
+    public bool Adult { get; set; }
+
+    [JsonPropertyName("overview")]
+    public string Overview { get; set; }
+
+    [JsonPropertyName("release_date")]
+    public string ReleaseDate { get; set; }
+
+    [JsonPropertyName("genre_ids")]
+    public IEnumerable<long> GenreIds { get; set; }
+
+    [JsonPropertyName("original_title")]
+    public string OriginalTitle { get; set; }
+
+    [JsonPropertyName("original_language")]
+    public string OriginalLanguage { get; set; }
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
+
+    [JsonPropertyName("backdrop_path")]
+    public string BackdropPath { get; set; }
+
+    [JsonPropertyName("popularity")]
+    public double Popularity { get; set; }
+
+    [JsonPropertyName("vote_count")]
+    public int VoteCount { get; set; }
+
+    [JsonPropertyName("video")]
+    public bool Video { get; set; }
+
+    [JsonPropertyName("vote_average")]
+    public double VoteAverage { get; set; }
+
+    public MoviesResult ToMovieResult(MovieRelevance movieRelevance)
+    {
+        var releaseDate = DateTime.Parse(ReleaseDate);
+
+        var relevance = movieRelevance switch
+        {
+            MovieRelevance.Name => "name",
+            MovieRelevance.Type => "type",
+            _ or MovieRelevance.None => string.Empty
+        };
+
+        return new(Id, Title, releaseDate, PosterPath, Overview, GenreIds, VoteAverage, 0, relevance);
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+    }
+}
