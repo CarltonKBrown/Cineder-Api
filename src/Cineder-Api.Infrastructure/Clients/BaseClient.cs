@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
-    internal abstract class BaseClient
+    public abstract class BaseClient
     {
         protected readonly CinederOptions _options;
 

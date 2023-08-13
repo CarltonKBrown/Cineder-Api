@@ -5,7 +5,7 @@ using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
 
-internal class GenreContract : BaseContract
+public class GenreContract : BaseContract
 {
     public GenreContract(long id, string name) : base(id)
     {

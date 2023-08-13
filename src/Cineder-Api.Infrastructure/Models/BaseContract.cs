@@ -2,7 +2,7 @@
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal abstract class BaseContract
+    public abstract class BaseContract
     {
         protected BaseContract(long id)
         {
@@ -12,6 +12,6 @@ namespace Cineder_Api.Infrastructure.Models
         protected BaseContract() : this(0) { }
 
         [JsonPropertyName("id")]
-        internal long Id { get; set; }
+        public long Id { get; set; }
     }
 }

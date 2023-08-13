@@ -5,7 +5,7 @@ using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
 
-internal class ProductionCompanyContract : BaseContract
+public class ProductionCompanyContract : BaseContract
 {
     public ProductionCompanyContract(long id, string name, string logoPath, string originCountry) : base(id)
     {

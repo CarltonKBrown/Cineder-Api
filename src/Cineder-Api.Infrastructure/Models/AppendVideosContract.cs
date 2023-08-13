@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class AppendVideosContract
+    public class AppendVideosContract
     {
         public AppendVideosContract(IEnumerable<VideoContract> results)
         {

@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class VideoContract : BaseContract
+    public class VideoContract : BaseContract
     {
-        internal VideoContract(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id)
+        public VideoContract(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id)
         {
             Name = name;
             IsoLang = isoLang;
@@ -17,7 +17,7 @@ namespace Cineder_Api.Infrastructure.Models
             Type = type;
         }
 
-        internal VideoContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty) { }
+        public VideoContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty) { }
 
         [JsonPropertyName("iso_3166_1")]
         public string IsoLang { get; set; }

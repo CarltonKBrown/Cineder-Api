@@ -3,20 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class AppendCastsContract
+    public class AppendCastsContract
     {
-        internal AppendCastsContract(IEnumerable<CastContract> cast)
+        public AppendCastsContract(IEnumerable<CastContract> cast)
         {
             Cast = cast;
         }
 
-        internal AppendCastsContract() : this(Enumerable.Empty<CastContract>())
+        public AppendCastsContract() : this(Enumerable.Empty<CastContract>())
         {
 
         }
 
         [JsonPropertyName("cast")]
-        internal IEnumerable<CastContract> Cast { get; set; }
+        public IEnumerable<CastContract> Cast { get; set; }
 
         public override string ToString()
         {

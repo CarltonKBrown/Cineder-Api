@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class CastContract : BaseContract
+    public class CastContract : BaseContract
     {
-        internal CastContract(long id, long castId, string character, string creditId, int gender, string name, int order, string profilePath) : base(id)
+        public CastContract(long id, long castId, string character, string creditId, int gender, string name, int order, string profilePath) : base(id)
         {
             CastId = castId;
             Character = character;
@@ -17,7 +17,7 @@ namespace Cineder_Api.Infrastructure.Models
             ProfilePath = profilePath;
         }
 
-        internal CastContract() : this(0, 0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty) { }
+        public CastContract() : this(0, 0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty) { }
 
         [JsonPropertyName("cast_id")]
         public long CastId { get; set; }

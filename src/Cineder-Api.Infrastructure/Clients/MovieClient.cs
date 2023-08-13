@@ -4,11 +4,12 @@ using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
-    internal class MovieClient : BaseClient, IMovieClient
+    public class MovieClient : BaseClient, IMovieClient
     {
         private readonly ILogger<MovieClient> _logger;
         public MovieClient(ILogger<MovieClient> logger, IHttpClientFactory httpClientFactory, IOptionsSnapshot<CinederOptions> optionsSnapshot) : base(httpClientFactory, optionsSnapshot)
@@ -21,7 +22,7 @@ namespace Cineder_Api.Infrastructure.Clients
         {
             _logger.LogInformation($"Attempting to get movie by Id: '{movieId}'");
 
-            var url = $"/movie/{movieId}?{AddApiKey}&{AddLang}";
+            var url = $"/movie/{movieId}?{AddApiKey()}&{AddLang()}";
 
             _logger.LogInformation($"URL to get movie by Id: {movieId}  - url: '{url}'");
 
@@ -34,13 +35,29 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var response = await client.GetFromJsonAsync<MovieDetailContract>(url);
+            var response = await client.GetAsync(url);
 
-            var movieDetails = response?.ToMovieDetail();
+            if (!response.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                return new();
+            }
+
+            var responseBody = await response.Content.ReadFromJsonAsync<MovieDetailContract>();
+
+            var responseMovieId = responseBody?.Id ?? 0;
+
+            if (responseMovieId < 1 || responseMovieId != movieId) 
+            {
+                _logger.LogWarning($"Invalid Movie Id parsed from response body: {responseMovieId}");
+
+                return new();
+            }
+
+            var movieDetails = responseBody?.ToMovieDetail();
 
             _logger.LogInformation($"Successfully retrieved details for movie having Id: '{movieId}'");
 
-            return movieDetails ??= new();
+            return movieDetails ?? new();
         }
 
         public async Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string searchText, int pageNum = 1)

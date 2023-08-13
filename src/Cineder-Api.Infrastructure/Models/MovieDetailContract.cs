@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class MovieDetailContract : BaseContract
+    public class MovieDetailContract : BaseContract
     {
         public MovieDetailContract(long id, string name, double budget, IEnumerable<GenreContract> genres, string overview, string posterPath, IEnumerable<ProductionCompanyContract> productionCompanies, DateTime releaseDate, double revenue, double runtime, string title, double voteAverage, AppendVideosContract videos, AppendCastsContract casts):base(id)
         {
@@ -79,9 +79,10 @@ namespace Cineder_Api.Infrastructure.Models
 
             return new(Id, Name, Budget, genres, Overview, PosterPath, productionCompanies, ReleaseDate, Revenue, Runtime, VoteAverage, videos, casts);
         }
-        public override string ToString()
+
+        public string ToString(bool indent = false)
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = indent });
         }
     }
 }
