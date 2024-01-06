@@ -1,6 +1,6 @@
 ﻿using Cineder_Api.Core.Entities;
 
-namespace Cineder_Api.Core.Clients
+namespace Cineder_Api.Application.Clients
 {
     public interface IMovieClient
     {

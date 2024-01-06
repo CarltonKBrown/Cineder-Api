@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
@@ -96,7 +95,7 @@ namespace Cineder_Api.Infrastructure.Clients
             {
                 return new();
             }
-            
+
             var responseObj = JsonSerializer.Deserialize<T>(responseBody);
 
             return responseObj ?? new();

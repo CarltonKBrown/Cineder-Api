@@ -1,4 +1,4 @@
-﻿using Cineder_Api.Core.Clients;
+﻿using Cineder_Api.Application.Clients;
 using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure;
 using Cineder_Api.Infrastructure.Clients;

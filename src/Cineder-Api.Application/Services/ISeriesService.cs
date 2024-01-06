@@ -1,7 +1,7 @@
 ﻿using Cineder_Api.Core.DTOs.Requests.Series;
 using Cineder_Api.Core.Entities;
 
-namespace Cineder_Api.Core.Services
+namespace Cineder_Api.Application.Services
 {
     public interface ISeriesService
     {

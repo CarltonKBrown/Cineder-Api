@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cineder-Api.Core\Cineder-Api.Core.csproj" />
+    <ProjectReference Include="..\Cineder-Api.Application\Cineder-Api.Application.csproj" />
   </ItemGroup>
 
 </Project>
