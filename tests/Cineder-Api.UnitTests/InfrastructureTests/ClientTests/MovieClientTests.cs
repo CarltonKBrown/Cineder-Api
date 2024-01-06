@@ -1,46 +1,45 @@
 ﻿using Cineder_Api.Core.Clients;
-using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure;
 using Cineder_Api.Infrastructure.Clients;
 using Cineder_Api.Infrastructure.Models;
-using Cineder_Api.UnitTests.Util;
+using Cineder_Api.UnitTests.InfrastructureTests.ClientTests.Fixtures;
 using FakeItEasy;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Net;
 using Xunit;
 
 namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
 {
-    public class MovieClientTests
+    public class MovieClientTests : IClassFixture<MovieClientFixture>
     {
-        private readonly IOptionsSnapshot<CinederOptions> _cinederOptionsFake;
-        private readonly ILogger<MovieClient> _loggerFake;
-        private readonly IHttpClientFactory _httpClientFactoryFake;
-        private readonly TestableHttpMessageHandler _testableHttpMessageHandlerFake;
-        private readonly CinederOptions _cinederOptions;
+        private readonly MovieClientFixture _movieClientFixture;
 
         private IMovieClient? _movieClientFake;
 
-        public MovieClientTests()
+        public MovieClientTests(MovieClientFixture movieClientFixture)
         {
-            _cinederOptions = new CinederOptions()
-            {
-                ApiBaseUrl = "https://api.themoviedb.org/3",
-                ApiKey = "1232",
-                ClientName = "MovieDb",
-                Language = "en",
-                MaxPages = 1
-            };
+            _movieClientFixture = movieClientFixture;
+        }
 
-            _cinederOptionsFake = A.Fake<IOptionsSnapshot<CinederOptions>>();
+        #region GetMovieByIdAsync Tests
+        [Fact]
+        public async Task GetMovieByIdAsync_NullHttpClient_ShouldReturnEmptyMovieDetail()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
 
-            _loggerFake = A.Fake<ILogger<MovieClient>>();
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
 
-            _testableHttpMessageHandlerFake = A.Fake<TestableHttpMessageHandler>();
+            // Act
 
-            _httpClientFactoryFake = A.Fake<IHttpClientFactory>();
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMovieByIdAsync(1);
+
+            var expected = new MovieDetail();
+
+            // Assert
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -48,18 +47,18 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
         {
             // Arrange
 
-            A.CallTo(() => _cinederOptionsFake.Value).Returns(_cinederOptions);
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(_movieClientFixture.CinederOptions);
 
-            A.CallTo(() => _testableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(new HttpResponseMessage(HttpStatusCode.NotFound));
+            A.CallTo(() => _movieClientFixture.TestableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(new HttpResponseMessage(HttpStatusCode.NotFound));
 
-            A.CallTo(() => _httpClientFactoryFake.CreateClient(_cinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_testableHttpMessageHandlerFake)
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(_movieClientFixture.CinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_movieClientFixture.TestableHttpMessageHandlerFake)
             {
-                BaseAddress = new Uri(_cinederOptionsFake.Value.ApiBaseUrl)
+                BaseAddress = new Uri(_movieClientFixture.CinederOptionsFake.Value.ApiBaseUrl)
             });
 
             // Act
 
-            _movieClientFake = new MovieClient(_loggerFake, _httpClientFactoryFake, _cinederOptionsFake);
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
 
             var result = await _movieClientFake.GetMovieByIdAsync(1);
 
@@ -113,18 +112,18 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
 
             var movieDetailContractFakeJson = movieDetailContractFake.ToString();
 
-            A.CallTo(() => _cinederOptionsFake.Value).Returns(_cinederOptions);
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(_movieClientFixture.CinederOptions);
 
-            A.CallTo(() => _testableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(movieDetailContractFakeJson) });
+            A.CallTo(() => _movieClientFixture.TestableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(movieDetailContractFakeJson) });
 
-            A.CallTo(() => _httpClientFactoryFake.CreateClient(_cinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_testableHttpMessageHandlerFake)
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(_movieClientFixture.CinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_movieClientFixture.TestableHttpMessageHandlerFake)
             {
-                BaseAddress = new Uri(_cinederOptionsFake.Value.ApiBaseUrl)
+                BaseAddress = new Uri(_movieClientFixture.CinederOptionsFake.Value.ApiBaseUrl)
             });
 
             // Act
 
-            _movieClientFake = new MovieClient(_loggerFake, _httpClientFactoryFake, _cinederOptionsFake);
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
 
             var result = await _movieClientFake.GetMovieByIdAsync(1);
 
@@ -137,5 +136,205 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
             Assert.Equal(expected.ProductionCompanies.First().Id, result.ProductionCompanies.First().Id);
             Assert.Equal(expected.ProductionCompanies.ToList()[2].Name, result.ProductionCompanies.ToList()[2].Name);
         }
+
+
+
+        [Fact]
+        public async Task GetMovieById_InvalidMovieId_ShouldReturnEmptyMovieDetail()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(_movieClientFixture.CinederOptions);
+
+            A.CallTo(() => _movieClientFixture.TestableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(_movieClientFixture.CinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_movieClientFixture.TestableHttpMessageHandlerFake)
+            {
+                BaseAddress = new Uri(_movieClientFixture.CinederOptionsFake.Value.ApiBaseUrl)
+            });
+
+            // Act
+
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var result = await _movieClientFake.GetMovieByIdAsync(-20);
+
+            // Assert
+
+            Assert.True(result.Id == 0);
+            Assert.True(string.IsNullOrWhiteSpace(result.Name));
+
+        }
+
+
+        [Fact]
+        public async Task GetMovieById_NullResponseContent_ShouldReturnEmptyMovieDetail()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(_movieClientFixture.CinederOptions);
+
+            var httpMessageWithNullContent = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = null
+            };
+
+            A.CallTo(() => _movieClientFixture.TestableHttpMessageHandlerFake.TestSendAsync(A<HttpRequestMessage>.Ignored, A<CancellationToken>.Ignored)).Returns(httpMessageWithNullContent);
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(_movieClientFixture.CinederOptionsFake.Value.ClientName)).Returns(new HttpClient(_movieClientFixture.TestableHttpMessageHandlerFake)
+            {
+                BaseAddress = new Uri(_movieClientFixture.CinederOptionsFake.Value.ApiBaseUrl)
+            });
+
+            // Act
+
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var result = await _movieClientFake.GetMovieByIdAsync(-20);
+
+            // Assert
+
+            Assert.True(result.Id == 0);
+            Assert.True(string.IsNullOrWhiteSpace(result.Name));
+
+        }
+        #endregion
+
+        #region GetMoviesByTitleAsync Tests
+        [Fact]
+        public async Task GetMoviesByTitleAsync_NullSearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByTitleAsync(null);
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+
+        [Fact]
+        public async Task GetMoviesByTitleAsync_EmptySearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByTitleAsync(string.Empty);
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+
+        [Fact]
+        public async Task GetMoviesByTitleAsync_BlankSearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByTitleAsync("     ");
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+        #endregion
+
+        #region GetMoviesByKeywordsAsync Tests
+        [Fact]
+        public async Task GetMoviesByKeywordsAsync_NullSearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByKeywordsAsync(null);
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+
+        [Fact]
+        public async Task GetMoviesByKeywordsAsync_EmptySearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByKeywordsAsync(string.Empty);
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+
+        [Fact]
+        public async Task GetMoviesByKeywordsAsync_BlankSearchText_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesByKeywordsAsync("     ");
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+        #endregion
+
+        #region GetMoviesSimilarAsync Tests
+        [Fact]
+        public async Task GetMoviesSimilarAsync_NegativeMovieId_ShouldReturnEmptySearchResult()
+        {
+            // Arrange
+            A.CallTo(() => _movieClientFixture.CinederOptionsFake.Value).Returns(new());
+
+            A.CallTo(() => _movieClientFixture.HttpClientFactoryFake.CreateClient(A<string>._)).Returns(new());
+
+            // Act
+            _movieClientFake = new MovieClient(_movieClientFixture.LoggerFake, _movieClientFixture.HttpClientFactoryFake, _movieClientFixture.CinederOptionsFake);
+
+            var actual = await _movieClientFake.GetMoviesSimilarAsync(-10);
+
+            // Assert
+            Assert.True(actual.TotalResults == 0);
+            Assert.True(actual.TotalPages == 0);
+            Assert.False(actual.Results.Any());
+        }
+        #endregion
     }
 }

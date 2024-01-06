@@ -1,7 +1,10 @@
 ﻿using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
@@ -22,6 +25,8 @@ namespace Cineder_Api.Infrastructure.Clients
         private protected async Task<IEnumerable<long>> GetKeywordIds(string searchText)
         {
             var result = new List<long>();
+
+            if (string.IsNullOrEmpty(searchText)) return result;
 
             var keywords = searchText.Split(' ').Where(x => x.Trim().Length > 1).Select(x => x.Trim());
 
@@ -67,6 +72,34 @@ namespace Cineder_Api.Infrastructure.Clients
 
             return new(data.Page, keywords, data.TotalResults, data.TotalPages);
 
+        }
+
+        private protected async Task<T> SendGetAsync<T>(string requestUrl) where T : new()
+        {
+            var client = _httpClientFactory?.CreateClient(_options.ClientName);
+
+            if (client == null || client.BaseAddress == null)
+            {
+                return new();
+            }
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                return new();
+            }
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(responseBody))
+            {
+                return new();
+            }
+            
+            var responseObj = JsonSerializer.Deserialize<T>(responseBody);
+
+            return responseObj ?? new();
         }
 
         private protected string AddApiKey()

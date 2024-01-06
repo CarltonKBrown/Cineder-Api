@@ -80,7 +80,9 @@ namespace Cineder_Api.Infrastructure.Models
             return new(Id, Name, Budget, genres, Overview, PosterPath, productionCompanies, ReleaseDate, Revenue, Runtime, VoteAverage, videos, casts);
         }
 
-        public string ToString(bool indent = false)
+        public override string ToString() => ToString(false);
+
+        public string ToString(bool indent)
         {
             return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = indent });
         }
