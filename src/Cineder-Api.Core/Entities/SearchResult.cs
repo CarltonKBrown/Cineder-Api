@@ -14,10 +14,10 @@ namespace Cineder_Api.Core.Entities
 
         public SearchResult() : this(1, Enumerable.Empty<T>(), 0, 0) { }
 
-        public int Page { get; protected set; }
-        public IEnumerable<T> Results { get; protected set; }
-        public int TotalResults { get; protected set; }
-        public int TotalPages { get; protected set; }
+        public int Page { get; set; }
+        public IEnumerable<T> Results { get; set; }
+        public int TotalResults { get; set; }
+        public int TotalPages { get; set; }
 
         public override string ToString()
         {

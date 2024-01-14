@@ -1,4 +1,4 @@
-﻿namespace Cineder_Api.Core.DTOs.Requests.Movies
+﻿namespace Cineder_Api.Application.DTOs.Requests.Movies
 {
     public record GetMoviesRequest(string SearchText, int PageNum = 1)
     {

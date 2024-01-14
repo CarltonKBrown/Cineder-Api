@@ -17,11 +17,11 @@
             
         }
 
-        public string PosterPath { get; protected set; }
-        public string Overview { get; protected set; }
-        public IEnumerable<long> GenreIds { get; protected set; }
-        public double VoteAverage { get; protected set; }
-        public int Idx { get; protected set; }
-        public string Relevance { get; protected set; }
+        public string PosterPath { get;  set; }
+        public string Overview { get;  set; }
+        public IEnumerable<long> GenreIds { get; set; }
+        public double VoteAverage { get; set; }
+        public int Idx { get; set; }
+        public string Relevance { get; set; }
     }
 }

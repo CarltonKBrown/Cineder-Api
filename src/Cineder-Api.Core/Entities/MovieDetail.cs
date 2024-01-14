@@ -2,7 +2,7 @@
 
 namespace Cineder_Api.Core.Entities
 {
-    public class MovieDetail : Entity
+    public class MovieDetail : Entity, IComparable<MovieDetail>
     {
         public MovieDetail(long id, string name, double budget, IEnumerable<Genre> genres, string overview, string postePath, IEnumerable<ProductionCompany> productionCompanies, DateTime releaseDate, double revenue, double runtime, double voteAverage, IEnumerable<Video> videos, IEnumerable<Cast> casts) : base(id, name)
         {
@@ -32,11 +32,33 @@ namespace Cineder_Api.Core.Entities
         public double VoteAverage { get; protected set; }
         public IEnumerable<Video> Videos { get; protected set; }
         public IEnumerable<Cast> Casts { get; protected set; }
+        
         public override string ToString()
         {
             var opt = new JsonSerializerOptions() { WriteIndented = true };
             return JsonSerializer.Serialize(this, opt);
         }
 
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as MovieDetail);
+        }
+
+        public bool Equals(MovieDetail? otherMovieDetail)
+        {
+            return otherMovieDetail != null && otherMovieDetail.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public int CompareTo(MovieDetail? other)
+        {
+            if (other == null) return 1;
+
+            return Id.CompareTo(other.Id);
+        }
     }
 }

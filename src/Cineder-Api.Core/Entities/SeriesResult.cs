@@ -2,6 +2,13 @@
 
 namespace Cineder_Api.Core.Entities
 {
+    public enum SeriesRelevance
+    {
+        None,
+        Type,
+        Name
+    }
+
     public class SeriesResult : ListResult
     {
         public SeriesResult(long id, string name, DateTime firstAirDate, IEnumerable<string> originCountry, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, string relevance) : base(id, name, posterPath, overview, genreIds, voteAverage, idx, relevance)
