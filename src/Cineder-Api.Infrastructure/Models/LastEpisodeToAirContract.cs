@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -54,6 +55,14 @@ internal class LastEpisodeToAirContract : BaseContract
 
     [JsonPropertyName("vote_count")]
     public int VoteCount { get; set; }
+
+    public LastEpisodeToAir ToLastEpisodeToAir()
+    {
+
+        _ = DateTime.TryParse(AirDate, out DateTime airDate);
+
+        return new(Id, Name, airDate, EpisodeNumber, Overview, ProductionCode, SeasonNumber, ShowId, StillPath, VoteAverage, VoteCount);
+    }
 
     public override string ToString()
     {

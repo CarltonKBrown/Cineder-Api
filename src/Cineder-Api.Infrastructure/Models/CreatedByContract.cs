@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
@@ -27,6 +28,11 @@ internal class CreatedByContract : BaseContract
 
     [JsonPropertyName("profile_path")]
     public string ProfilePath { get; set; }
+
+    public CreatedBy ToCreatedBy()
+    {
+        return new(Id, Name, CreditId, Gender, ProfilePath);
+    }
 
     public override string ToString()
     {

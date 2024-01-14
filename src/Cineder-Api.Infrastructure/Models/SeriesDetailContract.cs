@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Entities;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
@@ -141,6 +142,32 @@ namespace Cineder_Api.Infrastructure.Models
 
         [JsonPropertyName("vidoes")]
         public AppendVideosContract Videos { get; set; }
+
+        public SeriesDetail ToSeriesDetail()
+        {
+            var createdBy = CreatedBy.Select(x => x.ToCreatedBy()) ?? Enumerable.Empty<CreatedBy>();
+
+            var genre = Genres.Select(x => x.ToGenre());
+
+
+            _ = DateTime.TryParse(FirstAirDate, out DateTime firstAirDate);
+
+            _ = DateTime.TryParse(LastAirDate, out DateTime lastAirDate);
+
+            var lastEpisodeToAir = LastEpisodeToAir.ToLastEpisodeToAir();
+
+            var networks = Networks.Select(x => x.ToNetwork());
+
+            var productionCompanies = ProductionCompanies.Select(x => x.ToProductionCompany());
+
+            var seasons = Seasons.Select(x => x.ToSeasons());
+
+            var casts = Credits.Cast.Select(x => x.ToCast());
+
+            var videos = Videos.Results.Select(x => x.ToVideo());
+
+            return new(Id, Name, createdBy, Runtime, firstAirDate, genre, InProduction, Languages, lastAirDate, lastEpisodeToAir, NextEpisodeToAir, networks, NumberOfEpisodes, NumberOfSeasons, OriginCountry, OriginalLanguage, OriginalName, Overview, Popularity, PosterPath, productionCompanies, seasons, Status, VoteAverage, casts, videos);
+        }
 
         public override string ToString()
         {

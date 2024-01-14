@@ -2,7 +2,7 @@
 
 namespace Cineder_Api.Core.Entities
 {
-    public class SeriesDetail : Entity
+    public class SeriesDetail : Entity, IComparable<SeriesDetail>
     {
         public SeriesDetail(long id, string name, IEnumerable<CreatedBy> createdBy, IEnumerable<int> runtime, DateTime firstAirDate, IEnumerable<Genre> genres, bool inProduction, IEnumerable<string> languages, DateTime lastAirDate, LastEpisodeToAir lastEpisodeToAir, object nextEpisodeToAir, IEnumerable<Network> networks, int numberOfEpisodes, int numberOfSeasons, IEnumerable<string> originCountry, string originalLanguage, string originalName, string overview, double popularity, string posterPath, IEnumerable<ProductionCompany> productionCompanies, IEnumerable<Seasons> seasons, string status, double voteAverage, IEnumerable<Cast> casts, IEnumerable<Video> videos) : base(id, name)
         {
@@ -63,6 +63,28 @@ namespace Cineder_Api.Core.Entities
         {
             var opt = new JsonSerializerOptions() { WriteIndented = true };
             return JsonSerializer.Serialize(this, opt);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return base.Equals(obj as SeriesDetail);
+        }
+
+        public bool Equals(SeriesDetail? otherSeriesDetail)
+        {
+            return otherSeriesDetail != null && otherSeriesDetail.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public int CompareTo(SeriesDetail? other)
+        {
+            if (other == null) return 1;
+
+            return Id.CompareTo(other.Id);
         }
     }
 }

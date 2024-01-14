@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
@@ -26,6 +27,11 @@ internal class NetworksContract : BaseContract
 
     [JsonPropertyName("origin_country")]
     public string OriginCountry { get; set; }
+
+    public Network ToNetwork()
+    {
+        return new(Id, Name, LogoPath, OriginCountry);
+    }
 
     public override string ToString()
     {

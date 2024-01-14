@@ -21,7 +21,7 @@ namespace Cineder_Api.Infrastructure.Clients
         }
 
 
-        private protected async Task<IEnumerable<long>> GetKeywordIds(string searchText)
+        private protected async Task<IEnumerable<long>> GetKeywordIds(string? searchText)
         {
             var result = new List<long>();
 
@@ -133,7 +133,7 @@ namespace Cineder_Api.Infrastructure.Clients
             return $"with_keywords={keywordsForRequest}";
         }
 
-        private protected static string AddQuery(string searchText)
+        private protected static string AddQuery(string? searchText)
         {
             if (string.IsNullOrEmpty(searchText)) return string.Empty;
 

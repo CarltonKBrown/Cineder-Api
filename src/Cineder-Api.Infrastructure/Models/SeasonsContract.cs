@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Cineder_Api.Core.Entities;
 using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
@@ -39,6 +40,12 @@ internal class SeasonsContract : BaseContract
     [JsonPropertyName("season_number")]
     public int SeasonNumber { get; set; }
 
+    public Seasons ToSeasons()
+    {
+        _ = DateTime.TryParse(AirDate, out DateTime airDate);
+
+        return new(Id, Name, airDate, EpisodeCount, Overview, PosterPath, SeasonNumber);
+    }
     public override string ToString()
     {
         return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });

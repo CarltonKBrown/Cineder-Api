@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cineder_Api.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,9 @@ namespace Cineder_Api.Infrastructure.Models
 {
     internal class SeriesResultContract : BaseContract
     {
-        public SeriesResultContract(long id, string posterpath, double popularity, object backdropPath, double voteAverage, string overview, string firstAirDate, IEnumerable<string> originCountry, IEnumerable<int> genreIds, string originalLanguage, int voteCount, string name, string originalName) : base(id)
+        public SeriesResultContract(long id, string posterpath, double popularity, object backdropPath, double voteAverage, string overview, string firstAirDate, IEnumerable<string> originCountry, IEnumerable<long> genreIds, string originalLanguage, int voteCount, string name, string originalName) : base(id)
         {
-            Posterpath = posterpath;
+            PosterPath = posterpath;
             Popularity = popularity;
             BackdropPath = backdropPath;
             VoteAverage = voteAverage;
@@ -26,13 +27,13 @@ namespace Cineder_Api.Infrastructure.Models
             OriginalName = originalName;
         }
 
-        public SeriesResultContract() : this(0, string.Empty, 0.0, default!, 0.0, string.Empty, string.Empty, Enumerable.Empty<string>(), Enumerable.Empty<int>(), string.Empty, 0, string.Empty, string.Empty)
+        public SeriesResultContract() : this(0, string.Empty, 0.0, default!, 0.0, string.Empty, string.Empty, Enumerable.Empty<string>(), Enumerable.Empty<long>(), string.Empty, 0, string.Empty, string.Empty)
         {
             
         }
 
         [JsonPropertyName("poster_path")]
-        public string Posterpath { get; set; }
+        public string PosterPath { get; set; }
 
         [JsonPropertyName("popularity")]
         public double Popularity { get; set; }
@@ -53,7 +54,7 @@ namespace Cineder_Api.Infrastructure.Models
         public IEnumerable<string> OriginCountry { get; set; }
 
         [JsonPropertyName("genre_ids")]
-        public IEnumerable<int> GenreIds { get; set; }
+        public IEnumerable<long> GenreIds { get; set; }
 
         [JsonPropertyName("original_language")]
         public string OriginalLanguage { get; set; }
@@ -66,6 +67,20 @@ namespace Cineder_Api.Infrastructure.Models
 
         [JsonPropertyName("original_name")]
         public string OriginalName { get; set; }
+
+        public SeriesResult ToSeriesResult(SeriesRelevance seriesRelevance)
+        {
+            var firstAirDate = DateTime.Parse(FirstAirDate);
+
+            var relevance = seriesRelevance switch
+            {
+                SeriesRelevance.Name => "name",
+                SeriesRelevance.Type => "type",
+                _ or SeriesRelevance.None => string.Empty
+            };
+
+            return new(Id, Name, firstAirDate,OriginCountry, PosterPath, Overview, GenreIds, VoteAverage, 0, relevance);
+        }
 
         public override string ToString()
         {
