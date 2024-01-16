@@ -1,4 +1,7 @@
-﻿using Cineder_Api.Core.Config;
+﻿using Cineder_Api.Application.Clients;
+using Cineder_Api.Core.Clients;
+using Cineder_Api.Core.Config;
+using Cineder_Api.Infrastructure.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +23,9 @@ namespace Cineder_Api.Infrastructure
             {
                 opt.BaseAddress = new Uri(cinederOptions.ApiBaseUrl);
             });
+
+            services.AddScoped<IMovieClient, MovieClient>();
+            services.AddScoped<ISeriesClient, SeriesClient>();
 
             return services;
         }
