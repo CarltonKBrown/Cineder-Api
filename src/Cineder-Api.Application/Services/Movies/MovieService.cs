@@ -2,6 +2,7 @@
 using Cineder_Api.Application.DTOs.Requests.Movies;
 using Cineder_Api.Core.Entities;
 using Microsoft.Extensions.Logging;
+using PreventR;
 
 namespace Cineder_Api.Application.Services.Movies
 {
@@ -20,7 +21,7 @@ namespace Cineder_Api.Application.Services.Movies
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                request.Prevent().Null();
 
                 var result = await _movieClient.GetMovieByIdAsync(request.Id);
 
@@ -38,7 +39,7 @@ namespace Cineder_Api.Application.Services.Movies
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                request.Prevent().Null();
 
                 var titleMovies = await _movieClient.GetMoviesByTitleAsync(request.SearchText, request.PageNum);
 
@@ -62,7 +63,7 @@ namespace Cineder_Api.Application.Services.Movies
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                request.Prevent().Null();
 
                 var result = await _movieClient.GetMoviesSimilarAsync(request.MovieId, request.PageNum);
 
