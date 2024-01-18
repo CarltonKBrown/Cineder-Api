@@ -5,6 +5,7 @@ using Cineder_Api.Core.Enums;
 using Cineder_Api.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
@@ -14,7 +15,9 @@ namespace Cineder_Api.Infrastructure.Clients
 
         public SeriesClient(ILogger<SeriesClient> logger, IHttpClientFactory httpClientFactory, IOptionsSnapshot<CinederOptions> optionsSnapshot) : base(httpClientFactory, optionsSnapshot)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            logger.Prevent().Null();
+
+            _logger = logger;
         }
 
         public async Task<SeriesDetail> GetSeriesByIdAsync(long seriesId)

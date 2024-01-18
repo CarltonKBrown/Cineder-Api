@@ -1,6 +1,7 @@
 ﻿using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
 using Microsoft.Extensions.Options;
+using PreventR;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -15,9 +16,13 @@ namespace Cineder_Api.Infrastructure.Clients
 
         protected BaseClient(IHttpClientFactory httpClientFactory, IOptionsSnapshot<CinederOptions> optionsSnapshot)
         {
-            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            httpClientFactory.Prevent(nameof(httpClientFactory)).Null();
 
-            _options = optionsSnapshot.Value ?? throw new ArgumentNullException(nameof(optionsSnapshot.Value));
+            optionsSnapshot.Value.Prevent(nameof(optionsSnapshot.Value)).Null();
+
+            _httpClientFactory = httpClientFactory;
+
+            _options = optionsSnapshot.Value;
         }
 
 
@@ -73,32 +78,37 @@ namespace Cineder_Api.Infrastructure.Clients
 
         }
 
-        private protected async Task<T> SendGetAsync<T>(string requestUrl) where T : new()
+        private protected async Task<T> SendGetAsync<T>(string requestUrl) where T : class, new()
         {
-            var client = _httpClientFactory?.CreateClient(_options.ClientName);
-
-            if (client == null || client.BaseAddress == null)
+            try
             {
-                return new();
+                var client = _httpClientFactory.CreateClient(_options.ClientName);
+
+                client.Prevent(nameof(client)).Null();
+
+                client.BaseAddress!.Prevent(nameof(client.BaseAddress)).Null();
+
+                var response = await client.GetAsync(requestUrl);
+
+                if (!response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    throw new HttpRequestException("API did not respond with a 200 OK.");
+                }
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                responseBody.Prevent(nameof(responseBody)).NullOrWhiteSpace();
+
+                var responseObj = JsonSerializer.Deserialize<T>(responseBody);
+
+                responseObj!.Prevent(nameof(responseObj)).Null();
+
+                return responseObj!;
             }
-
-            var response = await client.GetAsync(requestUrl);
-
-            if (!response.StatusCode.Equals(HttpStatusCode.OK))
+            catch (Exception)
             {
-                return new();
+                throw;
             }
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (string.IsNullOrWhiteSpace(responseBody))
-            {
-                return new();
-            }
-
-            var responseObj = JsonSerializer.Deserialize<T>(responseBody);
-
-            return responseObj ?? new();
         }
 
         private protected string AddApiKey()
