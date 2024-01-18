@@ -85,9 +85,9 @@ namespace Cineder_Api.Application.Services.Movies
 
             acc.TotalPages += curr.TotalPages;
 
-            acc.TotalResults += curr.TotalResults;
-
             acc.Results = acc.Results.Concat(curr.Results).Distinct();
+
+            acc.TotalResults = acc.Results.Count();
 
             return acc;
         }
