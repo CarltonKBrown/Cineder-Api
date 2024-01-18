@@ -2,13 +2,9 @@
 using Cineder_Api.Application.DTOs.Requests.Movies;
 using Cineder_Api.Application.Services.Movies;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Enums;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cineder_Api.UnitTests.ApplicationTests.Services
@@ -33,17 +29,17 @@ namespace Cineder_Api.UnitTests.ApplicationTests.Services
         public async Task GetMoviesAsync_ResultsWithDuplicates_ShouldBeMergedAndFiltered()
         {
 
-            var movieNameResult1 = new MoviesResult(1, "John Doe", DateTime.Today, "", "", new long[] {1,2,3}, 0.0, 1, "name" );
+            var movieNameResult1 = new MoviesResult(1, "John Doe", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, SearchType.Name);
 
-            var movieNameResult2 = new MoviesResult(2, "John Doe2", DateTime.Today, "", "", new long[] {1,2,3}, 0.0, 1, "name" );
+            var movieNameResult2 = new MoviesResult(2, "John Doe2", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, SearchType.Name);
 
-            var movieNameResults = new MoviesResult[] {movieNameResult1,  movieNameResult2};
+            var movieNameResults = new MoviesResult[] { movieNameResult1, movieNameResult2 };
 
             var movieNameSearchResults = new SearchResult<MoviesResult>(1, movieNameResults, 2, 1);
 
-            var movieTypeResult1 = new MoviesResult(1, "John Doe", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, "type");
+            var movieTypeResult1 = new MoviesResult(1, "John Doe", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, SearchType.Keyword);
 
-            var movieTypeResult2 = new MoviesResult(3, "John Doe3", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, "type");
+            var movieTypeResult2 = new MoviesResult(3, "John Doe3", DateTime.Today, "", "", new long[] { 1, 2, 3 }, 0.0, 1, SearchType.Keyword);
 
             var movieTypeResults = new MoviesResult[] { movieTypeResult1, movieTypeResult2 };
 
@@ -58,6 +54,8 @@ namespace Cineder_Api.UnitTests.ApplicationTests.Services
             var actual = await _movieService.GetMoviesAsync(moviesRequest);
 
             Assert.True(actual.Results.Count() == 3);
+            Assert.True(actual.Results.Count(x => x.SearchType.Equals(SearchType.Name)) == 2);
+            Assert.True(actual.Results.Count(x => x.SearchType.Equals(SearchType.Keyword)) == 1);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Enums;
 using Cineder_Api.Infrastructure.Models;
 
 namespace Cineder_Api.Infrastructure;
@@ -65,18 +66,14 @@ internal class MovieResultContract : BaseContract
     [JsonPropertyName("vote_average")]
     public double VoteAverage { get; set; }
 
-    public MoviesResult ToMovieResult(MovieRelevance movieRelevance)
+    public MoviesResult ToMovieResult(SearchType searchType)
     {
-        var releaseDate = DateTime.Parse(ReleaseDate);
-
-        var relevance = movieRelevance switch
+        if (!DateTime.TryParse(ReleaseDate, out DateTime releaseDate))
         {
-            MovieRelevance.Name => "name",
-            MovieRelevance.Type => "type",
-            _ or MovieRelevance.None => string.Empty
-        };
+            throw new InvalidCastException("Could not parse movie result release date to DateTime.");
+        }
 
-        return new(Id, Title, releaseDate, PosterPath, Overview, GenreIds, VoteAverage, 0, relevance);
+        return new(Id, Title, releaseDate, PosterPath, Overview, GenreIds, VoteAverage, 0, searchType);
     }
 
     public override string ToString()

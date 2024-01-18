@@ -1,11 +1,7 @@
 ﻿using Cineder_Api.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Cineder_Api.Core.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Cineder_Api.Infrastructure.Models
 {
@@ -29,7 +25,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public SeriesResultContract() : this(0, string.Empty, 0.0, default!, 0.0, string.Empty, string.Empty, Enumerable.Empty<string>(), Enumerable.Empty<long>(), string.Empty, 0, string.Empty, string.Empty)
         {
-            
+
         }
 
         [JsonPropertyName("poster_path")]
@@ -68,18 +64,14 @@ namespace Cineder_Api.Infrastructure.Models
         [JsonPropertyName("original_name")]
         public string OriginalName { get; set; }
 
-        public SeriesResult ToSeriesResult(SeriesRelevance seriesRelevance)
+        public SeriesResult ToSeriesResult(SearchType searchType)
         {
-            var firstAirDate = DateTime.Parse(FirstAirDate);
-
-            var relevance = seriesRelevance switch
+            if (!DateTime.TryParse(FirstAirDate, out DateTime firstAirDate))
             {
-                SeriesRelevance.Name => "name",
-                SeriesRelevance.Type => "type",
-                _ or SeriesRelevance.None => string.Empty
-            };
+                throw new InvalidCastException("Could not parse series result first air date to DateTime.");
+            }
 
-            return new(Id, Name, firstAirDate,OriginCountry, PosterPath, Overview, GenreIds, VoteAverage, 0, relevance);
+            return new(Id, Name, firstAirDate, OriginCountry, PosterPath, Overview, GenreIds, VoteAverage, 0, searchType);
         }
 
         public override string ToString()

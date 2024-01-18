@@ -1,6 +1,7 @@
 ﻿using Cineder_Api.Core.Clients;
 using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Enums;
 using Cineder_Api.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -61,7 +62,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/search/tv?{searchQuery}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultSeriesResponse(url, SeriesRelevance.Name);
+            var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Name);
 
             return parsedResponse ?? new();
         }
@@ -74,7 +75,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/discover/tv?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultSeriesResponse(url, SeriesRelevance.Type);
+            var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Keyword);
 
             return parsedResponse ?? new();
         }
@@ -85,12 +86,12 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/tv/{seriesId}/recommendations?{AddPage(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultSeriesResponse(url, SeriesRelevance.None);
+            var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.None);
 
             return parsedResponse ?? new();
         }
 
-        private async Task<SearchResult<SeriesResult>> ParseSearchResultSeriesResponse(string url, SeriesRelevance seriesRelevance)
+        private async Task<SearchResult<SeriesResult>> ParseSearchResultSeriesResponse(string url, SearchType searchType)
         {
             var response = await SendGetAsync<SearchResultContract<SeriesResultContract>>(url);
 
@@ -105,7 +106,7 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var parsedResults = response!.Results.Select(x => x.ToSeriesResult(seriesRelevance));
+            var parsedResults = response!.Results.Select(x => x.ToSeriesResult(searchType));
 
             var parsedResponse = response.ToSearchResult(parsedResults);
 

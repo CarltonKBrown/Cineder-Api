@@ -1,21 +1,15 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Enums;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
-    public enum MovieRelevance
-    {
-        None,
-        Type,
-        Name
-    }
-
     public class MoviesResult : ListResult, IComparable<MoviesResult>
     {
-        public MoviesResult(long id, string name, DateTime releaseDate, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, string relevance) : base(id, name, posterPath, overview, genreIds, voteAverage, idx, relevance)
+        public MoviesResult(long id, string name, DateTime releaseDate, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, SearchType searchType) : base(id, name, posterPath, overview, genreIds, voteAverage, idx, searchType)
         {
             ReleaseDate = releaseDate;
         }
-        public MoviesResult() : this(0, string.Empty, DateTime.MinValue, string.Empty, string.Empty, Enumerable.Empty<long>(), 0.0, 0, string.Empty) { }
+        public MoviesResult() : this(0, string.Empty, DateTime.MinValue, string.Empty, string.Empty, Enumerable.Empty<long>(), 0.0, 0, SearchType.None) { }
 
         public DateTime ReleaseDate { get;  set; }
 
