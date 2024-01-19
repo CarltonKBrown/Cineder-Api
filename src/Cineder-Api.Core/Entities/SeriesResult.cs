@@ -1,21 +1,17 @@
 ﻿using Cineder_Api.Core.Enums;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
-    public enum SeriesRelevance
-    {
-        None,
-        Type,
-        Name
-    }
 
     public class SeriesResult : ListResult
     {
         public SeriesResult(long id, string name, DateTime firstAirDate, IEnumerable<string> originCountry, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, SearchType searchType) : base(id, name, posterPath, overview, genreIds, voteAverage, idx, searchType)
         {
             FirstAirDate = firstAirDate;
-            OriginCountry = originCountry;
+            OriginCountry = originCountry.Prevent(nameof(originCountry)).Null().Value;
         }
 
         public SeriesResult() : this(0, string.Empty, DateTime.MinValue, Enumerable.Empty<string>(), string.Empty, string.Empty, Enumerable.Empty<long>(), 0.0, 0, SearchType.None) { }
@@ -25,8 +21,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

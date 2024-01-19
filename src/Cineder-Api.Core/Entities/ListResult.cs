@@ -1,4 +1,5 @@
 ﻿using Cineder_Api.Core.Enums;
+using PreventR;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -6,9 +7,9 @@ namespace Cineder_Api.Core.Entities
     {
         protected ListResult(long id, string name, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, SearchType searchType) : base(id, name)
         {
-            PosterPath = posterPath;
-            Overview = overview;
-            GenreIds = genreIds;
+            PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
+            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+            GenreIds = genreIds.Prevent(nameof(genreIds)).Null().Value;
             VoteAverage = voteAverage;
             Idx = idx;
             SearchType = searchType;

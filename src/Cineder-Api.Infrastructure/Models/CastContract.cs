@@ -1,4 +1,6 @@
 ﻿using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,12 +11,12 @@ namespace Cineder_Api.Infrastructure.Models
         public CastContract(long id, long castId, string character, string creditId, int gender, string name, int order, string profilePath) : base(id)
         {
             CastId = castId;
-            Character = character;
-            CreditId = creditId;
+            Character = character.Prevent(nameof(character)).NullOrWhiteSpace();
+            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
             Gender = gender;
-            Name = name;
+            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
             Order = order;
-            ProfilePath = profilePath;
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
         }
 
         public CastContract() : this(0, 0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty) { }
@@ -44,7 +46,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

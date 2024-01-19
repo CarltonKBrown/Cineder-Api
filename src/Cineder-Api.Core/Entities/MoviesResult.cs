@@ -1,4 +1,5 @@
 ﻿using Cineder_Api.Core.Enums;
+using Cineder_Api.Core.Util;
 using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
@@ -15,8 +16,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
 
         public override bool Equals(object? obj)

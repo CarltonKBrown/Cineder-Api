@@ -2,7 +2,9 @@
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
 using Cineder_Api.Core.Enums;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -10,15 +12,15 @@ internal class MovieResultContract : BaseContract
 {
     public MovieResultContract(long id, string posterPath, bool adult, string overview, string releaseDate, IEnumerable<long> genreIds, string originalTitle, string originalLanguage, string title, string backdropPath, double popularity, int voteCount, bool video, double voteAverage) : base(id)
     {
-        PosterPath = posterPath;
+        PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
         Adult = adult;
-        Overview = overview;
-        ReleaseDate = releaseDate;
-        GenreIds = genreIds;
-        OriginalTitle = originalTitle;
-        OriginalLanguage = originalLanguage;
-        Title = title;
-        BackdropPath = backdropPath;
+        Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+        ReleaseDate = releaseDate.Prevent(nameof(releaseDate)).NullOrWhiteSpace();
+        GenreIds = genreIds.Prevent(nameof(genreIds)).Null().Value;
+        OriginalTitle = originalTitle.Prevent(nameof(originalTitle)).NullOrWhiteSpace();
+        OriginalLanguage = originalLanguage.Prevent(nameof(originalLanguage)).NullOrWhiteSpace();
+        Title = title.Prevent(nameof(title)).NullOrWhiteSpace();
+        BackdropPath = backdropPath.Prevent(nameof(backdropPath)).NullOrWhiteSpace();
         Popularity = popularity;
         VoteCount = voteCount;
         Video = video;
@@ -78,6 +80,6 @@ internal class MovieResultContract : BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

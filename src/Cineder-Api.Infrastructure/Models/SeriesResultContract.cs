@@ -1,5 +1,7 @@
 ﻿using Cineder_Api.Core.Entities;
 using Cineder_Api.Core.Enums;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,18 +11,18 @@ namespace Cineder_Api.Infrastructure.Models
     {
         public SeriesResultContract(long id, string posterpath, double popularity, object backdropPath, double voteAverage, string overview, string firstAirDate, IEnumerable<string> originCountry, IEnumerable<long> genreIds, string originalLanguage, int voteCount, string name, string originalName) : base(id)
         {
-            PosterPath = posterpath;
+            PosterPath = posterpath.Prevent(nameof(posterpath)).NullOrWhiteSpace();
             Popularity = popularity;
-            BackdropPath = backdropPath;
+            BackdropPath = backdropPath.Prevent(nameof(backdropPath)).Null().Value;
             VoteAverage = voteAverage;
-            Overview = overview;
-            FirstAirDate = firstAirDate;
-            OriginCountry = originCountry;
-            GenreIds = genreIds;
-            OriginalLanguage = originalLanguage;
+            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+            FirstAirDate = firstAirDate.Prevent(nameof(firstAirDate)).NullOrWhiteSpace();
+            OriginCountry = originCountry.Prevent(nameof(originCountry)).Null().Value;
+            GenreIds = genreIds.Prevent(nameof(genreIds)).Null().Value;
+            OriginalLanguage = originalLanguage.Prevent(nameof(originalLanguage)).NullOrWhiteSpace();
             VoteCount = voteCount;
-            Name = name;
-            OriginalName = originalName;
+            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+            OriginalName = originalName.Prevent(nameof(originalName)).NullOrWhiteSpace();
         }
 
         public SeriesResultContract() : this(0, string.Empty, 0.0, default!, 0.0, string.Empty, string.Empty, Enumerable.Empty<string>(), Enumerable.Empty<long>(), string.Empty, 0, string.Empty, string.Empty)
@@ -76,7 +78,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

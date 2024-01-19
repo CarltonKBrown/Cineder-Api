@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
@@ -7,7 +9,7 @@ namespace Cineder_Api.Infrastructure.Models
     {
         public AppendCastsContract(IEnumerable<CastContract> cast)
         {
-            Cast = cast;
+            Cast = cast.Prevent(nameof(cast)).Null().Value;
         }
 
         public AppendCastsContract() : this(Enumerable.Empty<CastContract>())
@@ -20,7 +22,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

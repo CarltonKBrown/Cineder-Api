@@ -13,8 +13,8 @@ namespace Cineder_Api.Application.Services.Movies
 
         public MovieService(IMovieClient movieClient, ILogger<MovieService> logger)
         {
-            _movieClient = movieClient;
-            _logger = logger;
+            _movieClient = movieClient.Prevent(nameof(movieClient)).Null().Value;
+            _logger = logger.Prevent(nameof(logger)).Null().Value;
         }
 
         public async Task<MovieDetail> GetMovieByIdAsync(GetMovieByIdRequest request)

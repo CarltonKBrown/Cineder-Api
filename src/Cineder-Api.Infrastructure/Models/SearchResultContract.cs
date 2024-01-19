@@ -1,4 +1,6 @@
 ﻿using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,7 +11,7 @@ internal class SearchResultContract<T>
     public SearchResultContract(int page, IEnumerable<T> results, int totalResults, int totalPages)
     {
         Page = page;
-        Results = results;
+        Results = results.Prevent(nameof(results)).Null().Value;
         TotalResults = totalResults;
         TotalPages = totalPages;
     }
@@ -38,7 +40,7 @@ internal class SearchResultContract<T>
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 
 }

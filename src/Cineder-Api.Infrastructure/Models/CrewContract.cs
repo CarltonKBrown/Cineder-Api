@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
@@ -7,12 +9,12 @@ namespace Cineder_Api.Infrastructure.Models
     {
         internal CrewMContract(long id, string creditId, string department, string name, int gender, string job, string profilePath) : base(id)
         {
-            CreditId = creditId;
-            Department = department;
-            Name = name;
+            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            Department = department.Prevent(nameof(department)).NullOrWhiteSpace();
+            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
             Gender = gender;
-            Job = job;
-            ProfilePath = profilePath;
+            Job = job.Prevent(nameof(job)).NullOrWhiteSpace();
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
         }
 
         internal CrewMContract() : this(0, string.Empty, string.Empty, string.Empty, 0, string.Empty, string.Empty) { }
@@ -37,7 +39,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -6,9 +8,9 @@ namespace Cineder_Api.Core.Entities
     {
         public CreatedBy(long id, string name, string creditId, string gender, string profilePath) : base(id, name)
         {
-            CreditId = creditId;
+            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
             Gender = gender;
-            ProfilePath = profilePath;
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
         }
 
         public CreatedBy() : this(0, string.Empty, string.Empty, string.Empty, string.Empty)
@@ -21,8 +23,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

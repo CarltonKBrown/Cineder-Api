@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -6,11 +8,11 @@ namespace Cineder_Api.Core.Entities
     {
         public Crew(long id, string name, string creditId, string gender, string profilePath, string department, string job) : base(id, name)
         {
-            CreditId = creditId;
-            Gender = gender;
-            ProfilePath = profilePath;
-            Department = department;
-            Job = job;
+            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            Gender = gender.Prevent(nameof(gender)).NullOrWhiteSpace();
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            Department = department.Prevent(nameof(department)).NullOrWhiteSpace();
+            Job = job.Prevent(nameof(job)).NullOrWhiteSpace();
         }
 
         public Crew() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
@@ -27,8 +29,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

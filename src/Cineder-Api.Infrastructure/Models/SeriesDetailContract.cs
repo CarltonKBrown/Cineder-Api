@@ -1,4 +1,6 @@
 ﻿using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,38 +10,38 @@ namespace Cineder_Api.Infrastructure.Models
     {
         public SeriesDetailContract(long id, string backdropPath, IEnumerable<CreatedByContract> createdBy, IEnumerable<int> runtime, string firstAirDate, IEnumerable<GenreContract> genres, string homepage, bool inProduction, IEnumerable<string> languages, string lastAirDate, LastEpisodeToAirContract lastEpisodeToAir, string name, object nextEpisodeToAir, IEnumerable<NetworksContract> networks, int numberOfEpisodes, int numberOfSeasons, IEnumerable<string> originCountry, string originalLanguage, string originalName, string overview, float popularity, string posterPath, IEnumerable<ProductionCompanyContract> productionCompanies, IEnumerable<ProductionCountriesContract> productionCountries, IEnumerable<SeasonsContract> seasons, IEnumerable<SpokenLanguagesContract> spokenLanguages, string status, string tagline, string type, double voteAverage, int voteCount, AppendCreditsContract credits, AppendVideosContract videos) : base(id)
         {
-            BackdropPath = backdropPath;
-            CreatedBy = createdBy;
-            Runtime = runtime;
-            FirstAirDate = firstAirDate;
-            Genres = genres;
-            Homepage = homepage;
+            BackdropPath = backdropPath.Prevent(nameof(backdropPath)).NullOrWhiteSpace();
+            CreatedBy = createdBy.Prevent(nameof(createdBy)).Null().Value;
+            Runtime = runtime.Prevent(nameof(runtime)).Null().Value;
+            FirstAirDate = firstAirDate.Prevent(nameof(firstAirDate)).NullOrWhiteSpace();
+            Genres = genres.Prevent(nameof(genres)).Null().Value;
+            Homepage = homepage.Prevent(nameof(homepage)).NullOrWhiteSpace();
             InProduction = inProduction;
-            Languages = languages;
-            LastAirDate = lastAirDate;
-            LastEpisodeToAir = lastEpisodeToAir;
-            Name = name;
-            NextEpisodeToAir = nextEpisodeToAir;
-            Networks = networks;
+            Languages = languages.Prevent(nameof(languages)).Null().Value;
+            LastAirDate = lastAirDate.Prevent(nameof(lastAirDate)).NullOrWhiteSpace();
+            LastEpisodeToAir = lastEpisodeToAir.Prevent(nameof(lastEpisodeToAir)).Null().Value;
+            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+            NextEpisodeToAir = nextEpisodeToAir.Prevent(nameof(nextEpisodeToAir)).Null().Value;
+            Networks = networks.Prevent(nameof(networks)).Null().Value;
             NumberOfEpisodes = numberOfEpisodes;
             NumberOfSeasons = numberOfSeasons;
-            OriginCountry = originCountry;
-            OriginalLanguage = originalLanguage;
-            OriginalName = originalName;
-            Overview = overview;
+            OriginCountry = originCountry.Prevent(nameof(originCountry)).Null().Value;
+            OriginalLanguage = originalLanguage.Prevent(nameof(originalLanguage)).NullOrWhiteSpace();
+            OriginalName = originalName.Prevent(nameof(originalName)).NullOrWhiteSpace();
+            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
             Popularity = popularity;
-            PosterPath = posterPath;
-            ProductionCompanies = productionCompanies;
-            ProductionCountries = productionCountries;
-            Seasons = seasons;
-            SpokenLanguages = spokenLanguages;
-            Status = status;
-            Tagline = tagline;
-            this.type = type;
+            PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
+            ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
+            ProductionCountries = productionCountries.Prevent(nameof(productionCountries)).Null().Value;
+            Seasons = seasons.Prevent(nameof(seasons)).Null().Value;
+            SpokenLanguages = spokenLanguages.Prevent(nameof(spokenLanguages)).Null().Value;
+            Status = status.Prevent(nameof(status)).NullOrWhiteSpace();
+            Tagline = tagline.Prevent(nameof(tagline)).NullOrWhiteSpace();
+            Type = type.Prevent(nameof(type)).NullOrWhiteSpace();
             VoteAverage = voteAverage;
             VoteCount = voteCount;
-            Credits = credits;
-            Videos = videos;
+            Credits = credits.Prevent(nameof(credits)).Null().Value;
+            Videos = videos.Prevent(nameof(videos)).Null().Value;
         }
 
         public SeriesDetailContract() : this(default!, string.Empty, Enumerable.Empty<CreatedByContract>(), Enumerable.Empty<int>(), string.Empty, Enumerable.Empty<GenreContract>(), string.Empty, false, Enumerable.Empty<string>(), string.Empty, default!, string.Empty, default!, Enumerable.Empty<NetworksContract>(), 0, 0, Enumerable.Empty<string>(), string.Empty, string.Empty, string.Empty, default!, string.Empty, Enumerable.Empty<ProductionCompanyContract>(), Enumerable.Empty<ProductionCountriesContract>(), Enumerable.Empty<SeasonsContract>(), Enumerable.Empty<SpokenLanguagesContract>(), string.Empty, string.Empty, string.Empty, default!, default!, default!, default!)
@@ -129,7 +131,7 @@ namespace Cineder_Api.Infrastructure.Models
         public string Tagline { get; set; }
 
         [JsonPropertyName("type")]
-        public string type { get; set; }
+        public string Type { get; set; }
 
         [JsonPropertyName("vote_average")]
         public double VoteAverage { get; set; }
@@ -171,7 +173,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

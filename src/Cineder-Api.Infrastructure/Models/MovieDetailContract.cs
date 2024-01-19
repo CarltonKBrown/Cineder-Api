@@ -1,4 +1,6 @@
 ﻿using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,18 +11,18 @@ namespace Cineder_Api.Infrastructure.Models
         public MovieDetailContract(long id, string name, double budget, IEnumerable<GenreContract> genres, string overview, string posterPath, IEnumerable<ProductionCompanyContract> productionCompanies, DateTime releaseDate, double revenue, double runtime, string title, double voteAverage, AppendVideosContract videos, AppendCastsContract casts):base(id)
         {
             Budget = budget;
-            Name = name;
+            Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
             Genres = genres;
-            Overview = overview;
-            PosterPath = posterPath;
-            ProductionCompanies = productionCompanies;
+            Overview = overview.Prevent((nameof(overview))).NullOrWhiteSpace();
+            PosterPath = posterPath.Prevent((nameof(posterPath))).NullOrWhiteSpace();
+            ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
             ReleaseDate = releaseDate;
             Revenue = revenue;
             Runtime = runtime;
-            Title = title;
+            Title = title.Prevent((nameof(title))).NullOrWhiteSpace();
             VoteAverage = voteAverage;
-            Videos = videos;
-            Casts = casts;
+            Videos = videos.Prevent(nameof(videos)).Null();
+            Casts = casts.Prevent(nameof(casts)).Null();
         }
 
         public MovieDetailContract() : this(default, string.Empty, default!, Enumerable.Empty<GenreContract>(), string.Empty, string.Empty, Enumerable.Empty<ProductionCompanyContract>(), default!, default!, default!, string.Empty, default!, default!, default!)
@@ -84,7 +86,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public string ToString(bool indent)
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = indent });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

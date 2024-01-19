@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -7,16 +9,16 @@ namespace Cineder_Api.Core.Entities
         public MovieDetail(long id, string name, double budget, IEnumerable<Genre> genres, string overview, string postePath, IEnumerable<ProductionCompany> productionCompanies, DateTime releaseDate, double revenue, double runtime, double voteAverage, IEnumerable<Video> videos, IEnumerable<Cast> casts) : base(id, name)
         {
             Budget = budget;
-            Genres = genres;
-            Overview = overview;
-            PostePath = postePath;
-            ProductionCompanies = productionCompanies;
+            Genres = genres.Prevent(nameof(genres)).Null().Value;
+            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+            PostePath = postePath.Prevent(nameof(postePath)).NullOrWhiteSpace();
+            ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
             ReleaseDate = releaseDate;
             Revenue = revenue;
             Runtime = runtime;
             VoteAverage = voteAverage;
-            Videos = videos;
-            Casts = casts;
+            Videos = videos.Prevent(nameof(videos)).Null().Value;
+            Casts = casts.Prevent(nameof(casts)).Null().Value;
         }
 
         public MovieDetail() : this(0, string.Empty, 0.0, Enumerable.Empty<Genre>(), string.Empty, string.Empty, Enumerable.Empty<ProductionCompany>(), DateTime.MinValue, 0.0, 0.0, 0.0, Enumerable.Empty<Video>(), Enumerable.Empty<Cast>()) { }
@@ -35,8 +37,7 @@ namespace Cineder_Api.Core.Entities
         
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
 
         public override bool Equals(object? obj)

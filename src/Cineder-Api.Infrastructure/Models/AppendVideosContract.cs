@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Cineder_Api.Infrastructure.Models
 {
@@ -12,12 +9,12 @@ namespace Cineder_Api.Infrastructure.Models
     {
         public AppendVideosContract(IEnumerable<VideoContract> results)
         {
-            Results = results;
+            Results = results.Prevent(nameof(results)).Null().Value;
         }
 
         public AppendVideosContract() : this(Enumerable.Empty<VideoContract>())
         {
-            
+
         }
 
         [JsonPropertyName("results")]
@@ -25,7 +22,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

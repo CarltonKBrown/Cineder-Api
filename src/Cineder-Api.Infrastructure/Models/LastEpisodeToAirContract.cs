@@ -1,5 +1,7 @@
 ﻿using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,14 +11,14 @@ internal class LastEpisodeToAirContract : BaseContract
 {
     public LastEpisodeToAirContract(long id, string airDate, int episodeNumber, string name, string overview, string productionCode, int seasonNumber, long showId, string stillPath, double voteAverage, int voteCount) : base(id)
     {
-        AirDate = airDate;
+        AirDate = airDate.Prevent((nameof(airDate))).NullOrWhiteSpace();
         EpisodeNumber = episodeNumber;
-        Name = name;
-        Overview = overview;
-        ProductionCode = productionCode;
+        Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
+        Overview = overview.Prevent((nameof(overview))).NullOrWhiteSpace();
+        ProductionCode = productionCode.Prevent((nameof(productionCode))).NullOrWhiteSpace();
         SeasonNumber = seasonNumber;
         ShowId = showId;
-        StillPath = stillPath;
+        StillPath = stillPath.Prevent((nameof(stillPath))).NullOrWhiteSpace();
         VoteAverage = voteAverage;
         VoteCount = voteCount;
     }
@@ -58,7 +60,6 @@ internal class LastEpisodeToAirContract : BaseContract
 
     public LastEpisodeToAir ToLastEpisodeToAir()
     {
-
         _ = DateTime.TryParse(AirDate, out DateTime airDate);
 
         return new(Id, Name, airDate, EpisodeNumber, Overview, ProductionCode, SeasonNumber, ShowId, StillPath, VoteAverage, VoteCount);
@@ -66,6 +67,6 @@ internal class LastEpisodeToAirContract : BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

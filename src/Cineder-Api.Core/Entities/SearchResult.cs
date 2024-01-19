@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -7,7 +9,7 @@ namespace Cineder_Api.Core.Entities
         public SearchResult(int page, IEnumerable<T> results, int totalResults, int totalPages)
         {
             Page = page;
-            Results = results;
+            Results = results.Prevent(nameof(results)).Null().Value;
             TotalPages = totalPages;
             TotalResults = totalResults;
         }
@@ -21,8 +23,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }
