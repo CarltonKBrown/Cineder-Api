@@ -46,14 +46,39 @@ namespace Cineder_Api.Application.Services.Series
             }
         }
 
-        public Task<SeriesDetail> GetSeriesByIdAsync(GetSeriesByIdRequest request)
+        public async Task<SeriesDetail> GetSeriesByIdAsync(GetSeriesByIdRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                request.Prevent(nameof(request)).Null();
+
+                var series = await _client.GetSeriesByIdAsync(request.Id);
+
+                return series;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to get Series by ID");
+                throw;
+            }
         }
 
-        public Task<SearchResult<SeriesResult>> GetSeriesSimilarAsync(GetSeriesSimilarRequest request)
+        public async Task<SearchResult<SeriesResult>> GetSeriesSimilarAsync(GetSeriesSimilarRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                request.Prevent(nameof(request)).Null();
+
+                var series = await _client.GetSeriesSimilarAsync(request.SeriesId, request.PageNum);
+
+                return series;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to get similar series");
+
+                throw;
+            }
         }
     }
 }

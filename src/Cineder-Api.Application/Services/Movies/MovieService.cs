@@ -76,20 +76,5 @@ namespace Cineder_Api.Application.Services.Movies
                 throw;
             }
         }
-
-        private SearchResult<MoviesResult> MovieResultAgregator(SearchResult<MoviesResult> acc, SearchResult<MoviesResult> curr)
-        {
-            if (acc.Results == null || curr.Results == null) return acc;
-
-            acc.Page = acc.Page >= curr.Page ? acc.Page : curr.Page;
-
-            acc.TotalPages += curr.TotalPages;
-
-            acc.Results = acc.Results.Concat(curr.Results).Distinct();
-
-            acc.TotalResults = acc.Results.Count();
-
-            return acc;
-        }
     }
 }
