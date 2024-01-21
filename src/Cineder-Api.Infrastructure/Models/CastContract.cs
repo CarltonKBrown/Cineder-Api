@@ -11,12 +11,12 @@ namespace Cineder_Api.Infrastructure.Models
         public CastContract(long id, long castId, string character, string creditId, int gender, string name, int order, string profilePath) : base(id)
         {
             CastId = castId;
-            Character = character.Prevent(nameof(character)).NullOrWhiteSpace();
-            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            Character = character.Prevent(nameof(character)).Null();
+            CreditId = creditId.Prevent(nameof(creditId)).Null();
             Gender = gender;
-            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+            Name = name.Prevent(nameof(name)).Null();
             Order = order;
-            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).Null();
         }
 
         public CastContract() : this(0, 0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty) { }

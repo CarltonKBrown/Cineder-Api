@@ -10,13 +10,13 @@ namespace Cineder_Api.Infrastructure.Models
     {
         public VideoContract(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id)
         {
-            Name = name.Prevent().NullOrWhiteSpace();
-            IsoLang = isoLang.Prevent().NullOrWhiteSpace();
-            IsoRegion = isoRegion.Prevent().NullOrWhiteSpace();
-            Key = key.Prevent().NullOrWhiteSpace();
-            Site = site.Prevent().NullOrWhiteSpace();
+            Name = name.Prevent().Null();
+            IsoLang = isoLang.Prevent().Null();
+            IsoRegion = isoRegion.Prevent().Null();
+            Key = key.Prevent().Null();
+            Site = site.Prevent().Null();
             Size = size;
-            Type = type.Prevent().NullOrWhiteSpace();
+            Type = type.Prevent().Null();
         }
 
         public VideoContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty) { }

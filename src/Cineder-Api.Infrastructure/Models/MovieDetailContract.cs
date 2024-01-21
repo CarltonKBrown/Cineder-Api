@@ -11,21 +11,21 @@ namespace Cineder_Api.Infrastructure.Models
         public MovieDetailContract(long id, string name, double budget, IEnumerable<GenreContract> genres, string overview, string posterPath, IEnumerable<ProductionCompanyContract> productionCompanies, DateTime releaseDate, double revenue, double runtime, string title, double voteAverage, AppendVideosContract videos, AppendCastsContract casts):base(id)
         {
             Budget = budget;
-            Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
+            Name = name.Prevent((nameof(name))).Null();
             Genres = genres;
-            Overview = overview.Prevent((nameof(overview))).NullOrWhiteSpace();
-            PosterPath = posterPath.Prevent((nameof(posterPath))).NullOrWhiteSpace();
+            Overview = overview.Prevent((nameof(overview))).Null();
+            PosterPath = posterPath.Prevent((nameof(posterPath))).Null();
             ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
             ReleaseDate = releaseDate;
             Revenue = revenue;
             Runtime = runtime;
-            Title = title.Prevent((nameof(title))).NullOrWhiteSpace();
+            Title = title.Prevent((nameof(title))).Null();
             VoteAverage = voteAverage;
             Videos = videos.Prevent(nameof(videos)).Null();
             Casts = casts.Prevent(nameof(casts)).Null();
         }
 
-        public MovieDetailContract() : this(default, string.Empty, default!, Enumerable.Empty<GenreContract>(), string.Empty, string.Empty, Enumerable.Empty<ProductionCompanyContract>(), default!, default!, default!, string.Empty, default!, default!, default!)
+        public MovieDetailContract() : this(0, string.Empty, 0.0, Enumerable.Empty<GenreContract>(), string.Empty, string.Empty, Enumerable.Empty<ProductionCompanyContract>(), DateTime.Today, 0.0, 0.0, string.Empty, 0.0, new(), new())
         {
 
         }

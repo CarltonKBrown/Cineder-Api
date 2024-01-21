@@ -11,7 +11,7 @@ public class GenreContract : BaseContract
 {
     public GenreContract(long id, string name) : base(id)
     {
-        Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
+        Name = name.Prevent((nameof(name))).Null();
     }
 
     public GenreContract() : this(0, string.Empty) { }

@@ -34,7 +34,7 @@ namespace Cineder_Api.Application.Services.Series
 
                 var seriesResults = new[] {titleSeries, keywordSeries};
 
-                var results = seriesResults.Aggregate(new SearchResult<SeriesResult>(), SearchResult<SeriesResult>.SearchResultAgregator<SeriesResult>);
+                var results = seriesResults.Aggregate(new SearchResult<SeriesResult>(), SearchResult<SeriesResult>.SearchResultAgregator);
 
                 return results;
             }

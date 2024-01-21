@@ -7,7 +7,7 @@ namespace Cineder_Api.Core.Entities
         protected Entity(long id, string name)
         {
             Id = id;
-            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+            Name = name.Prevent(nameof(name)).Null();
         }
 
         protected Entity() : this(0, string.Empty)

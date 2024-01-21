@@ -107,7 +107,7 @@ namespace Cineder_Api.Infrastructure.Clients
             }
             catch (Exception)
             {
-                throw;
+                return default!;
             }
         }
 

@@ -10,8 +10,8 @@ namespace Cineder_Api.Core.Entities
         {
             Budget = budget;
             Genres = genres.Prevent(nameof(genres)).Null().Value;
-            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
-            PostePath = postePath.Prevent(nameof(postePath)).NullOrWhiteSpace();
+            Overview = overview.Prevent(nameof(overview)).Null();
+            PostePath = postePath.Prevent(nameof(postePath)).Null();
             ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
             ReleaseDate = releaseDate;
             Revenue = revenue;

@@ -10,11 +10,11 @@ namespace Cineder_Api.Core.Entities
         {
             AirDate = airDate;
             EpisodeNumber = episodeNumber;
-            Overiew = overiew.Prevent(nameof(overiew)).NullOrWhiteSpace();
-            ProductionCode = productionCode.Prevent(nameof(productionCode)).NullOrWhiteSpace();
+            Overiew = overiew.Prevent(nameof(overiew)).Null();
+            ProductionCode = productionCode.Prevent(nameof(productionCode)).Null();
             SeasonNumber = seasonNumber;
             ShowId = showId;
-            StillPath = stillPath.Prevent(nameof(stillPath)).NullOrWhiteSpace();
+            StillPath = stillPath.Prevent(nameof(stillPath)).Null();
             VoteAverage = voteAverage;
             VoteCount = voteCount;
         }
