@@ -47,7 +47,7 @@ namespace Cineder_Api.Application.Services.Movies
 
                 var searchResults = new[] { titleMovies, keywordMovies };
 
-                var results = searchResults.Aggregate(new SearchResult<MoviesResult>(), MovieResultAgregator);
+                var results = searchResults.Aggregate(new SearchResult<MoviesResult>(), SearchResult<MoviesResult>.SearchResultAgregator);
 
                 return results;
             }

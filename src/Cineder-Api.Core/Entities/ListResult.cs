@@ -7,8 +7,8 @@ namespace Cineder_Api.Core.Entities
     {
         protected ListResult(long id, string name, string posterPath, string overview, IEnumerable<long> genreIds, double voteAverage, int idx, SearchType searchType) : base(id, name)
         {
-            PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
-            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+            PosterPath = posterPath.Prevent(nameof(posterPath)).Null();
+            Overview = overview.Prevent(nameof(overview)).Null();
             GenreIds = genreIds.Prevent(nameof(genreIds)).Null().Value;
             VoteAverage = voteAverage;
             Idx = idx;

@@ -21,6 +21,21 @@ namespace Cineder_Api.Core.Entities
         public int TotalResults { get; set; }
         public int TotalPages { get; set; }
 
+        public static SearchResult<T> SearchResultAgregator<T>(SearchResult<T> acc, SearchResult<T> curr)
+        {
+            if (acc.Results == null || curr.Results == null) return acc;
+
+            acc.Page = acc.Page >= curr.Page ? acc.Page : curr.Page;
+
+            acc.TotalPages += curr.TotalPages;
+
+            acc.Results = acc.Results.Concat(curr.Results).Distinct();
+
+            acc.TotalResults = acc.Results.Count();
+
+            return acc;
+        }
+
         public override string ToString()
         {
             return JsonSerializer.Serialize(this, JsonUtil.Indent);
