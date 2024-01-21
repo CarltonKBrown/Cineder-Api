@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -9,10 +11,10 @@ internal class CreatedByContract : BaseContract
 {
     public CreatedByContract(long id, string creditId, string name, string gender, string profilePath) : base(id)
     {
-        CreditId = creditId;
-        Name = name;
-        Gender = gender;
-        ProfilePath = profilePath;
+        CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+        Gender = gender.Prevent(nameof(gender)).NullOrWhiteSpace();
+        ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
     }
 
     public CreatedByContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty) { }
@@ -36,6 +38,6 @@ internal class CreatedByContract : BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

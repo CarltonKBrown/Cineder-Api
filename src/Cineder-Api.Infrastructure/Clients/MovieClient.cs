@@ -1,9 +1,11 @@
 ﻿using Cineder_Api.Application.Clients;
 using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Enums;
 using Cineder_Api.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure.Clients
 {
@@ -12,7 +14,9 @@ namespace Cineder_Api.Infrastructure.Clients
         private readonly ILogger<MovieClient> _logger;
         public MovieClient(ILogger<MovieClient> logger, IHttpClientFactory httpClientFactory, IOptionsSnapshot<CinederOptions> optionsSnapshot) : base(httpClientFactory, optionsSnapshot)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            logger.Prevent().Null();
+
+            _logger = logger;
         }
 
 
@@ -51,7 +55,7 @@ namespace Cineder_Api.Infrastructure.Clients
             }
         }
 
-        public async Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string searchText, int pageNum = 1)
+        public async Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string? searchText, int pageNum = 1)
         {
             var searchQuery = AddQuery(searchText);
 
@@ -59,12 +63,12 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/search/movie?{searchQuery}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, MovieRelevance.Name);
+            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Name);
 
             return parsedResponse ?? new();
         }
 
-        public async Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string searchText, int pageNum = 1)
+        public async Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string? searchText, int pageNum = 1)
         {
             var keywordIds = await GetKeywordIds(searchText);
 
@@ -72,7 +76,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/discover/movie?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, MovieRelevance.Type);
+            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Keyword);
 
             return parsedResponse ?? new();
         }
@@ -84,13 +88,13 @@ namespace Cineder_Api.Infrastructure.Clients
 
             var url = $"/movie/{movieId}/recommendations?{AddPage(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, MovieRelevance.None);
+            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
 
             return parsedResponse ?? new();
         }
 
 
-        private async Task<SearchResult<MoviesResult>> ParseSearchResultMovieResponse(string url, MovieRelevance movieRelevance)
+        private async Task<SearchResult<MoviesResult>> ParseSearchResultMovieResponse(string url, SearchType searchType)
         {
             var response = await SendGetAsync<SearchResultContract<MovieResultContract>>(url);
 
@@ -105,7 +109,7 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var parsedResults = response!.Results.Select(x => x.ToMovieResult(movieRelevance));
+            var parsedResults = response!.Results.Select(x => x.ToMovieResult(searchType));
 
             var parsedResponse = response.ToSearchResult(parsedResults);
 

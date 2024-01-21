@@ -10,7 +10,7 @@ namespace Cineder_Api.Application.Clients
         /// <param name="searchText"></param>
         /// <param name="pageNum"></param>
         /// <returns>The list of movies on a given page</returns>
-        Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string searchText, int pageNum = 1);
+        Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string? searchText, int pageNum = 1);
 
         /// <summary>
         /// Fetches a list of Movies based on keywords releated to elements of the 'searchText'
@@ -18,7 +18,7 @@ namespace Cineder_Api.Application.Clients
         /// <param name="searchText"></param>
         /// <param name="pageNum"></param>
         /// <returns>The list of movies on a given page</returns>
-        Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string searchText, int pageNum = 1);
+        Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string? searchText, int pageNum = 1);
 
         /// <summary>
         /// Retrieve details for a particular Movie using its unqiue 'movieId'

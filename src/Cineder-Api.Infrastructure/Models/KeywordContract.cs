@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -9,7 +11,7 @@ internal class KeywordContract : BaseContract
 {
     public KeywordContract(long id, string name) : base(id)
     {
-        Name = name;
+        Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
     }
 
     public KeywordContract() : this(0, string.Empty) { }
@@ -21,6 +23,6 @@ internal class KeywordContract : BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

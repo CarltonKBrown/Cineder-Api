@@ -1,4 +1,6 @@
-﻿using Cineder_Api.Infrastructure.Models;
+﻿using Cineder_Api.Core.Util;
+using Cineder_Api.Infrastructure.Models;
+using PreventR;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,8 +10,8 @@ internal class SpokenLanguagesContract:BaseContract
 {
     public SpokenLanguagesContract(long id, string isoRegion, string name) : base(id)
     {
-        IsoRegion = isoRegion;
-        Name = name;
+        IsoRegion = isoRegion.Prevent(nameof(isoRegion)).NullOrWhiteSpace();
+        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
     }
 
     public SpokenLanguagesContract() : this(0, string.Empty, string.Empty){}
@@ -22,6 +24,6 @@ internal class SpokenLanguagesContract:BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

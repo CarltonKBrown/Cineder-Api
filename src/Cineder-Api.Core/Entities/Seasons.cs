@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -8,8 +10,8 @@ namespace Cineder_Api.Core.Entities
         {
             AirDate = airDate;
             EpisodeCount = episodeCount;
-            Overview = overview;
-            PosterPath = posterPath;
+            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+            PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
             SeasonNumber = seasonNumber;
         }
 
@@ -23,8 +25,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

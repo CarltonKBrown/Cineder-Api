@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
@@ -7,8 +9,8 @@ namespace Cineder_Api.Infrastructure.Models
     {
         internal AppendCreditsContract(IEnumerable<CastContract> cast, IEnumerable<CrewMContract> crew)
         {
-            Cast = cast;
-            Crew = crew;
+            Cast = cast.Prevent(nameof(cast)).Null().Value;
+            Crew = crew.Prevent(nameof(crew)).Null().Value;
         }
 
         internal AppendCreditsContract() : this(Enumerable.Empty<CastContract>(), Enumerable.Empty<CrewMContract>()) { }
@@ -20,7 +22,7 @@ namespace Cineder_Api.Infrastructure.Models
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

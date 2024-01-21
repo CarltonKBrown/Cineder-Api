@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -6,8 +8,8 @@ namespace Cineder_Api.Core.Entities
     {
         public ProductionCompany(long id, string name, string logoPath, string originCountry):base(id, name)
         {
-            LogoPath = logoPath;
-            OriginCountry = originCountry;
+            LogoPath = logoPath.Prevent(nameof(logoPath)).NullOrWhiteSpace();
+            OriginCountry = originCountry.Prevent(nameof(originCountry)).NullOrWhiteSpace();
         }
 
         public ProductionCompany():this(0, string.Empty, string.Empty, string.Empty)
@@ -20,8 +22,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

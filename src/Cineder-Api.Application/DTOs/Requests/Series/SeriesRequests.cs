@@ -10,8 +10,8 @@
         public GetSeriesByIdRequest() : this(0) { }
     }
 
-    public record GetSeriesSimilarRequest(string SearchText, int PageNum = 1)
+    public record GetSeriesSimilarRequest(long SeriesId, int PageNum = 1)
     {
-        public GetSeriesSimilarRequest() : this(string.Empty, 1) { }
+        public GetSeriesSimilarRequest() : this(0, 1) { }
     }
 }

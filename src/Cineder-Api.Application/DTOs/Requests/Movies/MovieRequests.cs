@@ -10,8 +10,8 @@
         public GetMovieByIdRequest() : this(0) { }
     }
 
-    public record GetMoviesSimilarRequest(string SearchText, int PageNum = 1)
+    public record GetMoviesSimilarRequest(long MovieId, int PageNum = 1)
     {
-        public GetMoviesSimilarRequest() : this(string.Empty, 1) { }
+        public GetMoviesSimilarRequest() : this(0, 1) { }
     }
 }

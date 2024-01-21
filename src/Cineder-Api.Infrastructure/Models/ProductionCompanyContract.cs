@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -9,9 +11,9 @@ public class ProductionCompanyContract : BaseContract
 {
     public ProductionCompanyContract(long id, string name, string logoPath, string originCountry) : base(id)
     {
-        Name = name;
-        LogoPath = logoPath;
-        OriginCountry = originCountry;
+        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+        LogoPath = logoPath.Prevent(nameof(logoPath)).NullOrWhiteSpace();
+        OriginCountry = originCountry.Prevent(nameof(originCountry)).NullOrWhiteSpace();
     }
 
     public ProductionCompanyContract() : this(0, string.Empty, string.Empty, string.Empty)
@@ -32,6 +34,6 @@ public class ProductionCompanyContract : BaseContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

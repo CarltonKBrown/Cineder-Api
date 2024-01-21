@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure;
@@ -7,8 +9,8 @@ internal class ProductionCountriesContract
 {
     public ProductionCountriesContract(string isoLang, string name)
     {
-        IsoLang = isoLang;
-        Name = name;
+        IsoLang = isoLang.Prevent(nameof(isoLang)).NullOrWhiteSpace();
+        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
     }
 
     public ProductionCountriesContract() : this(string.Empty, string.Empty)
@@ -24,6 +26,6 @@ internal class ProductionCountriesContract
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

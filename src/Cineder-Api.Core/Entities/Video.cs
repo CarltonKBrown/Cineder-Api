@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Cineder_Api.Core.Util;
+using PreventR;
+using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
@@ -6,12 +8,12 @@ namespace Cineder_Api.Core.Entities
     {
         public Video(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id, name)
         {
-            IsoLang = isoLang;
-            IsoRegion = isoRegion;
-            Key = key;
-            Site = site;
+            IsoLang = isoLang.Prevent(nameof(isoLang)).NullOrWhiteSpace();
+            IsoRegion = isoRegion.Prevent(nameof(isoRegion)).NullOrWhiteSpace();
+            Key = key.Prevent(nameof(key)).NullOrWhiteSpace();
+            Site = site.Prevent(nameof(site)).NullOrWhiteSpace();
             Size = size;
-            Type = type;
+            Type = type.Prevent(nameof(type)).NullOrWhiteSpace();
         }
 
         public Video() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty)
@@ -28,8 +30,7 @@ namespace Cineder_Api.Core.Entities
 
         public override string ToString()
         {
-            var opt = new JsonSerializerOptions() { WriteIndented = true };
-            return JsonSerializer.Serialize(this, opt);
+            return JsonSerializer.Serialize(this, JsonUtil.Indent);
         }
     }
 }

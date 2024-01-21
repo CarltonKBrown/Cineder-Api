@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Cineder_Api.Infrastructure.Models;
+using PreventR;
 
 namespace Cineder_Api.Infrastructure;
 
@@ -9,11 +11,11 @@ internal class SeasonsContract : BaseContract
 {
     public SeasonsContract(long id, string airDate, int episodeCount, string name, string overview, string posterPath, int seasonNumber) : base(id)
     {
-        AirDate = airDate;
+        AirDate = airDate.Prevent(nameof(airDate)).NullOrWhiteSpace();
         EpisodeCount = episodeCount;
-        Name = name;
-        Overview = overview;
-        PosterPath = posterPath;
+        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+        Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
+        PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
         SeasonNumber = seasonNumber;
     }
 
@@ -48,6 +50,6 @@ internal class SeasonsContract : BaseContract
     }
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonUtil.Indent);
     }
 }

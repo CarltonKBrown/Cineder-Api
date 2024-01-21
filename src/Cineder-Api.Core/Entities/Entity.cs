@@ -1,11 +1,13 @@
-﻿namespace Cineder_Api.Core.Entities
+﻿using PreventR;
+
+namespace Cineder_Api.Core.Entities
 {
     public abstract class Entity
     {
         protected Entity(long id, string name)
         {
             Id = id;
-            Name = name;
+            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
         }
 
         protected Entity() : this(0, string.Empty)
