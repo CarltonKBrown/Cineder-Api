@@ -21,9 +21,12 @@ namespace Cineder_Api.Core.Entities
         public int TotalResults { get; set; }
         public int TotalPages { get; set; }
 
-        public static SearchResult<T> SearchResultAgregator<T>(SearchResult<T> acc, SearchResult<T> curr)
+        public static SearchResult<T> SearchResultAgregator(SearchResult<T> acc, SearchResult<T> curr)
         {
-            if (acc.Results == null || curr.Results == null) return acc;
+            if (acc.Results == null || curr.Results == null)
+            {
+                return acc;
+            }
 
             acc.Page = acc.Page >= curr.Page ? acc.Page : curr.Page;
 
