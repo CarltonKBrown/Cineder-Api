@@ -26,7 +26,7 @@ namespace Cineder_Api.Infrastructure.Clients
             {
                 _logger.LogInformation($"Attempting to get movie by Id: '{movieId}'");
 
-                var url = $"/movie/{movieId}?{AddApiKey}&{AddLang}";
+                var url = $"movie/{movieId}?{AddApiKey()}&{AddLang()}";
 
                 _logger.LogInformation($"URL to get movie by Id: {movieId}  - url: '{url}'");
 

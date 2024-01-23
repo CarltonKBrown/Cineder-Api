@@ -42,8 +42,14 @@ namespace Cineder_Api.Infrastructure.Models
         [JsonPropertyName("type")]
         public string Type { get; set; }
 
+        [JsonPropertyName("official")]
+        public bool Official { get; set; }
 
-        public Video ToVideo() => new (Id, Name, IsoLang, IsoRegion, Key, Site, Size, Type);
+        [JsonPropertyName("published_at")]
+        public DateTime PublishedAt { get; set; }
+
+
+        public Video ToVideo() => new (Id, Name, IsoLang, IsoRegion, Key, Site, Size, Type, Official, PublishedAt);
 
         public override string ToString()
         {

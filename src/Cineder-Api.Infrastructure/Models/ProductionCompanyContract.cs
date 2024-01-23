@@ -30,7 +30,7 @@ public class ProductionCompanyContract : BaseContract
     [JsonPropertyName("origin_country")]
     public string OriginCountry { get; set; }
 
-    public ProductionCompany ToProductionCompany() => new(Id, Name, LogoPath, OriginCountry);
+    public ProductionCompany ToProductionCompany() => new(Id, Name, LogoPath ?? string.Empty, OriginCountry ?? string.Empty);
 
     public override string ToString()
     {
