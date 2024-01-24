@@ -32,7 +32,7 @@ namespace Cineder_Api.Func
 
                 if ((response?.Id ?? 0) < 1)
                 {
-                    return new NotFoundResult();
+                    return new NotFoundObjectResult(response);
                 }
 
                 return new OkObjectResult(response);

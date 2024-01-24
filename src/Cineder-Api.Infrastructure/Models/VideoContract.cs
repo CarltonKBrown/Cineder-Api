@@ -6,20 +6,26 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    public class VideoContract : BaseContract
+    public class VideoContract
     {
-        public VideoContract(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id)
+        public VideoContract(string id, string name, string isoLang, string isoRegion, string key, string site, int size, string type, bool official, DateTime publishedAt)
         {
-            Name = name.Prevent().Null();
-            IsoLang = isoLang.Prevent().Null();
+            Id = id.Prevent(nameof(id)).Null();
+            Name = name.Prevent(nameof(name)).Null();
+            IsoLang = isoLang.Prevent(nameof(isoLang)).Null();
             IsoRegion = isoRegion.Prevent().Null();
             Key = key.Prevent().Null();
             Site = site.Prevent().Null();
             Size = size;
             Type = type.Prevent().Null();
+            PublishedAt = publishedAt;
+            Official = official;
         }
 
-        public VideoContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty) { }
+        public VideoContract() : this(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty, false, DateTime.Now) { }
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
 
         [JsonPropertyName("iso_3166_1")]
         public string IsoLang { get; set; }

@@ -10,11 +10,11 @@ namespace Cineder_Api.Core.Entities
         public Cast(long id, string name, long castId, string character, string creditId, int gender, int order, string profilePath) : base(id, name)
         {
             CastId = castId;
-            Character = character.Prevent(nameof(character)).NullOrWhiteSpace();
-            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            Character = character.Prevent(nameof(character)).Null();
+            CreditId = creditId.Prevent(nameof(creditId)).Null();
             Gender = gender;
             Order = order;
-            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            ProfilePath = profilePath;
         }
 
         public Cast() : this(0, string.Empty, 0, string.Empty, string.Empty, 0, 0, string.Empty)
