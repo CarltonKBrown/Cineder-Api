@@ -92,11 +92,11 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
 
             var videos = new List<VideoContract>()
             {
-                new(1, "VideoContract1", "vidLang1", "vidRegon1", "Key1", "Site1", 1, "type1"),
-                new(2, "VideoContract2", "vidLang2", "vidRegon2", "Key2", "Site2", 2, "type2"),
-                new(3, "VideoContract3", "vidLang3", "vidRegon3", "Key3", "Site3", 3, "type3"),
-                new(4, "VideoContract4", "vidLang4", "vidRegon4", "Key4", "Site4", 4, "type4"),
-                new(5, "VideoContract5", "vidLang5", "vidRegon5", "Key5", "Site5", 5, "type5")
+                new("1", "VideoContract1", "vidLang1", "vidRegon1", "Key1", "Site1", 1, "type1", true, DateTime.Today),
+                new("2", "VideoContract2", "vidLang2", "vidRegon2", "Key2", "Site2", 2, "type2", true, DateTime.Today),
+                new("3", "VideoContract3", "vidLang3", "vidRegon3", "Key3", "Site3", 3, "type3", true, DateTime.Today),
+                new("4", "VideoContract4", "vidLang4", "vidRegon4", "Key4", "Site4", 4, "type4", true, DateTime.Today),
+                new("5", "VideoContract5", "vidLang5", "vidRegon5", "Key5", "Site5", 5, "type5", true, DateTime.Today)
             };
 
             var casts = new List<CastContract>()
@@ -108,7 +108,7 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
                 new(5, 5, "CastChar", "CastCredit1", 1, "CastName1", 1, "castProfile1")
             };
 
-            var movieDetailContractFake = new MovieDetailContract(1, "MovieName", 0.0, genres, "overview", "posterPath", productionCompanies, DateTime.Today, 0.0, 0.0, "Movietitle", 0.0, new AppendVideosContract(videos), new AppendCastsContract(casts));
+            var movieDetailContractFake = new MovieDetailContract(1, "MovieName", 0.0, genres, "overview", "posterPath", productionCompanies, DateTime.Today, 0.0, 0.0, 0.0, new AppendVideosContract(videos), new AppendCastsContract(casts));
 
             var movieDetailContractFakeJson = movieDetailContractFake.ToString();
 
