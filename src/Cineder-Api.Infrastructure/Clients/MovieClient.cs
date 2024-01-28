@@ -57,40 +57,67 @@ namespace Cineder_Api.Infrastructure.Clients
 
         public async Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string? searchText, int pageNum = 1)
         {
-            var searchQuery = AddQuery(searchText);
+            try
+            {
+                var searchQuery = AddQuery(searchText);
 
-            if (string.IsNullOrWhiteSpace(searchQuery)) return new();
+                if (string.IsNullOrWhiteSpace(searchQuery)) return new();
 
-            var url = $"/search/movie?{searchQuery}&{AddDefaults(pageNum)}";
+                var url = $"search/movie?{searchQuery}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Name);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Name);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies by title and/or page requested. Title detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
         public async Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string? searchText, int pageNum = 1)
         {
-            var keywordIds = await GetKeywordIds(searchText);
+            try
+            {
+                var keywordIds = await GetKeywordIds(searchText);
 
-            if (!keywordIds.Any()) return new();
+                if (!keywordIds.Any()) return new();
 
-            var url = $"/discover/movie?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
+                var url = $"discover/movie?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Keyword);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Keyword);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies by keywords and/or page requested. keywords detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
 
         public async Task<SearchResult<MoviesResult>> GetMoviesSimilarAsync(long movieId, int pageNum = 1)
         {
-            if (movieId < 1) return new();
+            try
+            {
+                if (movieId < 1) return new();
 
-            var url = $"/movie/{movieId}/recommendations?{AddPage(pageNum)}";
+                var url = $"movie/{movieId}/recommendations?{AddPage(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies similar to Movie Id and/or page requested. Movie Id detected: '{movieId}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
 

@@ -47,5 +47,29 @@ namespace Cineder_Api.Func
 
         }
 
+        [Function("GetMovies")]
+        public async Task<IActionResult> GetMovies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "moviesfind")] HttpRequest req, [FromQuery] string search, [FromQuery] int page = 1)
+        {
+            try
+            {
+                var request = new GetMoviesRequest(search, page);
+
+                var response = await _movieService.GetMoviesAsync(request);
+
+                if ((response?.TotalResults ?? 0) < 1)
+                {
+                    return new NotFoundObjectResult(response);
+                }
+
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex)
+                {
+                    StatusCode = 500,
+                };
+            }
+        }
     }
 }

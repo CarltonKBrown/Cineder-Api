@@ -3,7 +3,7 @@ using Cineder_Api.Application;
 using Cineder_Api.Infrastructure;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWebApplication()
     .ConfigureServices((ctx, services) =>
     {
         var config = ctx.Configuration;

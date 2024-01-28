@@ -64,7 +64,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private async Task<SearchResult<Keyword>> GetKeywordsAsync(string keyword, int pageNum = 1)
         {
-            var url = $"/search/keyword?query={keyword.Trim()}&page={pageNum}&{AddApiKey}&{AddLang}";
+            var url = $"search/keyword?query={keyword.Trim()}&page={pageNum}&{AddApiKey()}&{AddLang()}";
 
             var client = _httpClientFactory.CreateClient(_options.ClientName);
 
@@ -123,7 +123,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private protected string AddDefaults(int pageNum = 1)
         {
-            return $"{AddPage(pageNum)}&{AddApiKey}&{AddLang}&{AddIncludeAdult}&{AddIncludeVideo}";
+            return $"{AddPage(pageNum)}&{AddApiKey()}&{AddLang()}&{AddIncludeAdult()}&{AddIncludeVideo()}";
         }
 
         private protected static string AddIncludeAdult(bool includeAdult = false)
