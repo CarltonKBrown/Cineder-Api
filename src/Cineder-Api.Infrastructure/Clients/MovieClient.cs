@@ -30,9 +30,15 @@ namespace Cineder_Api.Infrastructure.Clients
 
                 _logger.LogInformation($"URL to get movie by Id: {movieId}  - url: '{url}'");
 
-                var response = await SendGetAsync<MovieDetailContract>(url);
+                var jsonStringResponse = await SendGetAsync(url);
 
-                var responseMovieId = response?.Id ?? 0;
+                if (!TryParse<MovieDetailContract>(jsonStringResponse, out var movieDetailContract))
+                {
+                    _logger.LogError("Could not parse results!");
+
+                    return new();
+                }
+                var responseMovieId = movieDetailContract?.Id ?? 0;
 
                 if (responseMovieId < 1 || responseMovieId != movieId)
                 {
@@ -41,7 +47,7 @@ namespace Cineder_Api.Infrastructure.Clients
                     return new();
                 }
 
-                var movieDetails = response?.ToMovieDetail();
+                var movieDetails = movieDetailContract?.ToMovieDetail();
 
                 _logger.LogInformation($"Successfully retrieved details for movie having Id: '{movieId}'");
 
@@ -123,11 +129,18 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private async Task<SearchResult<MoviesResult>> ParseSearchResultMovieResponse(string url, SearchType searchType)
         {
-            var response = await SendGetAsync<SearchResultContract<MovieResultContract>>(url);
+            var jsonStringResponse = await SendGetAsync(url);
 
-            var hasResults = response?.Results?.Any() ?? false;
+            if (!TryParse<SearchResultContract<MovieResultContract>>(jsonStringResponse, out var movieSearchResults))
+            {
+                _logger.LogError("Could not parse results!");
 
-            var totalResults = response?.TotalResults ?? 0;
+                return new();
+            }
+
+            var hasResults = movieSearchResults?.Results?.Any() ?? false;
+
+            var totalResults = movieSearchResults?.TotalResults ?? 0;
 
             if (!hasResults || totalResults < 1)
             {
@@ -136,9 +149,9 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var parsedResults = response!.Results.Select(x => x.ToMovieResult(searchType));
+            var parsedResults = movieSearchResults!.Results.Select(x => x.ToMovieResult(searchType));
 
-            var parsedResponse = response.ToSearchResult(parsedResults);
+            var parsedResponse = movieSearchResults.ToSearchResult(parsedResults);
 
             return parsedResponse ?? new();
         }

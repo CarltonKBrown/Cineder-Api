@@ -32,9 +32,16 @@ namespace Cineder_Api.Infrastructure.Clients
 
                 _logger.LogInformation($"URL to get series by Id: {seriesId}  - url: '{url}'");
 
-                var response = await SendGetAsync<SeriesDetailContract>(url);
+                var jsonStringResponse = await SendGetAsync(url);
 
-                var responseSeriesId = response?.Id ?? 0;
+                if(!TryParse<SeriesDetailContract>(jsonStringResponse, out var seriesDetailContract))
+                {
+                    _logger.LogError("Could not parse results!");
+
+                    return new();
+                }
+
+                var responseSeriesId = seriesDetailContract?.Id ?? 0;
 
                 if (responseSeriesId < 1 || responseSeriesId != seriesId)
                 {
@@ -43,7 +50,7 @@ namespace Cineder_Api.Infrastructure.Clients
                     return new();
                 }
 
-                var seriesDetail = response?.ToSeriesDetail();
+                var seriesDetail = seriesDetailContract?.ToSeriesDetail();
 
                 _logger.LogInformation($"Successfully retrieved details for series having Id: '{seriesId}'");
 
@@ -59,28 +66,46 @@ namespace Cineder_Api.Infrastructure.Clients
 
         public async Task<SearchResult<SeriesResult>> GetSeriesByTitleAsync(string? searchText, int pageNum = 1)
         {
-            var searchQuery = AddQuery(searchText);
+            try
+            {
+                var searchQuery = AddQuery(searchText);
 
-            if (string.IsNullOrWhiteSpace(searchQuery)) return new();
+                if (string.IsNullOrWhiteSpace(searchQuery)) return new();
 
-            var url = $"/search/tv?{searchQuery}&{AddDefaults(pageNum)}";
+                var url = $"/search/tv?{searchQuery}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Name);
+                var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Name);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get series by title and/or page requested. Title detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
         public async Task<SearchResult<SeriesResult>> GetSeriesKeywordsAsync(string? searchText, int pageNum = 1)
         {
-            var keywordIds = await GetKeywordIds(searchText);
+            try
+            {
+                var keywordIds = await GetKeywordIds(searchText);
 
-            if (!keywordIds.Any()) return new();
+                if (!keywordIds.Any()) return new();
 
-            var url = $"/discover/tv?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
+                var url = $"/discover/tv?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Keyword);
+                var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Keyword);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get series by keywords and/or page requested. keywords detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
         public async Task<SearchResult<SeriesResult>> GetSeriesSimilarAsync(long seriesId, int pageNum = 1)
@@ -96,11 +121,18 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private async Task<SearchResult<SeriesResult>> ParseSearchResultSeriesResponse(string url, SearchType searchType)
         {
-            var response = await SendGetAsync<SearchResultContract<SeriesResultContract>>(url);
+            var jsonStringResponse = await SendGetAsync(url);
 
-            var hasResults = response?.Results?.Any() ?? false;
+            if (!TryParse<SearchResultContract<SeriesResultContract>>(jsonStringResponse, out var seriesDetailContract))
+            {
+                _logger.LogError("Could not parse results!");
 
-            var totalResults = response?.TotalResults ?? 0;
+                return new();
+            }
+
+            var hasResults = seriesDetailContract?.Results?.Any() ?? false;
+
+            var totalResults = seriesDetailContract?.TotalResults ?? 0;
 
             if (!hasResults || totalResults < 1)
             {
@@ -109,9 +141,9 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var parsedResults = response!.Results.Select(x => x.ToSeriesResult(searchType));
+            var parsedResults = seriesDetailContract!.Results.Select(x => x.ToSeriesResult(searchType));
 
-            var parsedResponse = response.ToSearchResult(parsedResults);
+            var parsedResponse = seriesDetailContract.ToSearchResult(parsedResults);
 
             return parsedResponse ?? new();
         }
