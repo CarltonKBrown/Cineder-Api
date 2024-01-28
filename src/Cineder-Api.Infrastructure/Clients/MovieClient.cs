@@ -106,7 +106,7 @@ namespace Cineder_Api.Infrastructure.Clients
             {
                 if (movieId < 1) return new();
 
-                var url = $"movie/{movieId}/recommendations?{AddPage(pageNum)}";
+                var url = $"movie/{movieId}/recommendations?{AddDefaults(pageNum)}";
 
                 var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
 

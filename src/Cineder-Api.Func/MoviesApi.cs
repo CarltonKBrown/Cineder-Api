@@ -1,9 +1,9 @@
 ﻿using Cineder_Api.Application.DTOs.Requests.Movies;
 using Cineder_Api.Application.Services.Movies;
+using Cineder_Api.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using PreventR;
 
@@ -39,7 +39,9 @@ namespace Cineder_Api.Func
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex)
+                _logger.LogError(ex, "GetMovieById API could not return a result");
+
+                return new ObjectResult(new MovieDetail())
                 {
                     StatusCode = 500,
                 };
@@ -48,7 +50,7 @@ namespace Cineder_Api.Func
         }
 
         [Function("GetMovies")]
-        public async Task<IActionResult> GetMovies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "moviesfind")] HttpRequest req, [FromQuery] string search, [FromQuery] int page = 1)
+        public async Task<IActionResult> GetMovies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "movies")] HttpRequest req, [FromQuery] string search, [FromQuery] int page = 1)
         {
             try
             {
@@ -65,7 +67,36 @@ namespace Cineder_Api.Func
             }
             catch (Exception ex)
             {
-                return new ObjectResult(ex)
+                _logger.LogError(ex, "GetMovies API could not return a result");
+
+                return new ObjectResult(new SearchResult<MoviesResult>())
+                {
+                    StatusCode = 500,
+                };
+            }
+        }
+
+        [Function("GetSimilarMoviesbyId")]
+        public async Task<IActionResult> GetSimilarMoviesById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route ="movies/similar/{id}")] HttpRequest req, long id, [FromQuery] int page = 1)
+        {
+            try
+            {
+                var request = new GetMoviesSimilarRequest(id, page);
+
+                var response = await _movieService.GetMoviesSimilarAsync(request);
+
+                if ((response?.TotalResults ?? 0) < 1)
+                {
+                    return new NotFoundObjectResult(response);
+                }
+
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetSimilarMoviesById API could not return a result");
+
+                return new ObjectResult(new SearchResult<MoviesResult>())
                 {
                     StatusCode = 500,
                 };
