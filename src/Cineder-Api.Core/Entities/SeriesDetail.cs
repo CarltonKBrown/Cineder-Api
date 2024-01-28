@@ -16,7 +16,7 @@ namespace Cineder_Api.Core.Entities
             Languages = languages.Prevent(nameof(languages)).Null().Value;
             LastAirDate = lastAirDate;
             LastEpisodeToAir = lastEpisodeToAir.Prevent(nameof(lastEpisodeToAir)).Null().Value;
-            NextEpisodeToAir = nextEpisodeToAir.Prevent(nameof(nextEpisodeToAir)).Null().Value;
+            NextEpisodeToAir = nextEpisodeToAir ?? new();
             Networks = networks.Prevent(nameof(networks)).Null().Value;
             NumberOfEpisodes = numberOfEpisodes;
             NumberOfSeasons = numberOfSeasons;

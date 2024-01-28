@@ -28,7 +28,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
                 if (seriesId < 1) return new();
 
-                var url = $"/tv/{seriesId}?{AddApiKey}&{AddLang}&append_to_response=videos,credits";
+                var url = $"tv/{seriesId}?{AddApiKey()}&{AddLang()}&append_to_response=videos,credits";
 
                 _logger.LogInformation($"URL to get series by Id: {seriesId}  - url: '{url}'");
 

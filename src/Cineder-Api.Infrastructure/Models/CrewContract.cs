@@ -5,19 +5,19 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    internal class CrewMContract : BaseContract
+    public class CrewMContract : BaseContract
     {
-        internal CrewMContract(long id, string creditId, string department, string name, int gender, string job, string profilePath) : base(id)
+        public CrewMContract(long id, string creditId, string department, string name, int gender, string job, string profilePath) : base(id)
         {
-            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
-            Department = department.Prevent(nameof(department)).NullOrWhiteSpace();
-            Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+            CreditId = creditId.Prevent(nameof(creditId)).Null();
+            Department = department.Prevent(nameof(department)).Null();
+            Name = name.Prevent(nameof(name)).Null();
             Gender = gender;
-            Job = job.Prevent(nameof(job)).NullOrWhiteSpace();
-            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            Job = job.Prevent(nameof(job)).Null();
+            ProfilePath = profilePath.Prevent(nameof(profilePath)).Null();
         }
 
-        internal CrewMContract() : this(0, string.Empty, string.Empty, string.Empty, 0, string.Empty, string.Empty) { }
+        public CrewMContract() : this(0, string.Empty, string.Empty, string.Empty, 0, string.Empty, string.Empty) { }
 
         [JsonPropertyName("credit_id")]
         public string CreditId { get; set; }

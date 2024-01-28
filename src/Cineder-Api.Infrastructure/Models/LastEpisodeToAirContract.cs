@@ -11,14 +11,14 @@ internal class LastEpisodeToAirContract : BaseContract
 {
     public LastEpisodeToAirContract(long id, string airDate, int episodeNumber, string name, string overview, string productionCode, int seasonNumber, long showId, string stillPath, double voteAverage, int voteCount) : base(id)
     {
-        AirDate = airDate.Prevent((nameof(airDate))).NullOrWhiteSpace();
+        AirDate = airDate.Prevent((nameof(airDate))).Null();
         EpisodeNumber = episodeNumber;
-        Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
-        Overview = overview.Prevent((nameof(overview))).NullOrWhiteSpace();
-        ProductionCode = productionCode.Prevent((nameof(productionCode))).NullOrWhiteSpace();
+        Name = name.Prevent((nameof(name))).Null();
+        Overview = overview.Prevent((nameof(overview))).Null();
+        ProductionCode = productionCode.Prevent((nameof(productionCode))).Null();
         SeasonNumber = seasonNumber;
         ShowId = showId;
-        StillPath = stillPath.Prevent((nameof(stillPath))).NullOrWhiteSpace();
+        StillPath = stillPath.Prevent((nameof(stillPath))).Null();
         VoteAverage = voteAverage;
         VoteCount = voteCount;
     }

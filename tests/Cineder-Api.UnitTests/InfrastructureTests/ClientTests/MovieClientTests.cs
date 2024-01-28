@@ -101,11 +101,11 @@ namespace Cineder_Api.UnitTests.InfrastructureTests.ClientTests
 
             var casts = new List<CastContract>()
             {
-                new(1, 1, "CastChar1", "CastCredit1", 1, "CastName1", 1, "castProfile1"),
-                new(2, 2, "CastChar2", "CastCredit2", 2, "CastName2", 2, "castProfile2"),
-                new(3, 3, "CastChar", "CastCredit1", 1, "CastName1", 1, "castProfile1"),
-                new(4, 4, "CastChar", "CastCredit1", 1, "CastName1", 1, "castProfile1"),
-                new(5, 5, "CastChar", "CastCredit1", 1, "CastName1", 1, "castProfile1")
+                new(1, "CastChar1", "CastCredit1", 1, "CastName1", 1, "castProfile1", false, "castKnownForDept1", 1.0),
+                new(2, "CastChar2", "CastCredit2", 2, "CastName2", 2, "castProfile2", false, "castKnownForDept2", 1.0),
+                new(3, "CastChar", "CastCredit1", 3, "CastName1", 3, "castProfile3", false, "castKnownForDept3", 1.0),
+                new(4, "CastChar", "CastCredit1", 4, "CastName1", 4, "castProfile4", false, "castKnownForDept4", 1.0),
+                new(5, "CastChar", "CastCredit1", 5, "CastName1", 5, "castProfile5", false, "castKnownForDept5", 1.0)
             };
 
             var movieDetailContractFake = new MovieDetailContract(1, "MovieName", 0.0, genres, "overview", "posterPath", productionCompanies, DateTime.Today, 0.0, 0.0, 0.0, new AppendVideosContract(videos), new AppendCastsContract(casts));

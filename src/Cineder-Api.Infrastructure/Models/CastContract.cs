@@ -8,21 +8,20 @@ namespace Cineder_Api.Infrastructure.Models
 {
     public class CastContract : BaseContract
     {
-        public CastContract(long id, long castId, string character, string creditId, int gender, string name, int order, string profilePath) : base(id)
+        public CastContract(long id, string character, string creditId, int gender, string name, int order, string profilePath, bool adult, string knownForDepartment, double popularity) : base(id)
         {
-            CastId = castId;
             Character = character.Prevent(nameof(character)).Null();
             CreditId = creditId.Prevent(nameof(creditId)).Null();
             Gender = gender;
             Name = name.Prevent(nameof(name)).Null();
             Order = order;
             ProfilePath = profilePath.Prevent(nameof(profilePath)).Null();
+            Adult = adult;
+            KnownForDepartment = knownForDepartment;
+            Popularity = popularity;
         }
 
-        public CastContract() : this(0, 0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty) { }
-
-        [JsonPropertyName("cast_id")]
-        public long CastId { get; set; }
+        public CastContract() : this(0, string.Empty, string.Empty, 0, string.Empty, 0, string.Empty, false, string.Empty, 0.0) { }
 
         [JsonPropertyName("character")]
         public string Character { get; set; }
@@ -42,7 +41,16 @@ namespace Cineder_Api.Infrastructure.Models
         [JsonPropertyName("profile_path")]
         public string ProfilePath { get; set; }
 
-        public Cast ToCast() => new(Id, Name, CastId, Character, CreditId, Gender, Order, ProfilePath);
+        [JsonPropertyName("adult")]
+        public bool Adult { get; set; }
+
+        [JsonPropertyName("known_for_department")]
+        public string KnownForDepartment { get; set; }
+
+        [JsonPropertyName("popularity")]
+        public double Popularity { get; set; }
+
+        public Cast ToCast() => new(Id, Name, Character, CreditId, Gender, Order, ProfilePath, Adult, KnownForDepartment, Popularity);
 
         public override string ToString()
         {
