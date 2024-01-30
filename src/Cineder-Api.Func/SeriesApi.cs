@@ -75,5 +75,32 @@ namespace Cineder_Api.Func
                 };
             }
         }
+
+        [Function("GetSimilarSeriesbyId")]
+        public async Task<IActionResult> GetSimilarMoviesById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "series/similar/{id}")] HttpRequest req, long id, [FromQuery] int page = 1)
+        {
+            try
+            {
+                var request = new GetSeriesSimilarRequest(id, page);
+
+                var response = await _seriesService.GetSeriesSimilarAsync(request);
+
+                if ((response?.TotalResults ?? 0) < 1)
+                {
+                    return new NotFoundObjectResult(response);
+                }
+
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetSimilarSeriesById API could not return a result");
+
+                return new ObjectResult(new SearchResult<SeriesResult>())
+                {
+                    StatusCode = 500,
+                };
+            }
+        }
     }
 }

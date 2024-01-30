@@ -112,7 +112,7 @@ namespace Cineder_Api.Infrastructure.Clients
         {
             if (seriesId < 1) return new();
 
-            var url = $"/tv/{seriesId}/recommendations?{AddPage(pageNum)}";
+            var url = $"tv/{seriesId}/recommendations?{AddApiKey()}&{AddLang()}&{AddPage(pageNum)}";
 
             var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.None);
 
