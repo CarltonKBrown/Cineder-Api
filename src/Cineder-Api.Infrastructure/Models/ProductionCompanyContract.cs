@@ -11,9 +11,9 @@ public class ProductionCompanyContract : BaseContract
 {
     public ProductionCompanyContract(long id, string name, string logoPath, string originCountry) : base(id)
     {
-        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
-        LogoPath = logoPath.Prevent(nameof(logoPath)).NullOrWhiteSpace();
-        OriginCountry = originCountry.Prevent(nameof(originCountry)).NullOrWhiteSpace();
+        Name = name.Prevent(nameof(name)).Null();
+        LogoPath = logoPath.Prevent(nameof(logoPath)).Null();
+        OriginCountry = originCountry.Prevent(nameof(originCountry)).Null();
     }
 
     public ProductionCompanyContract() : this(0, string.Empty, string.Empty, string.Empty)
@@ -30,7 +30,7 @@ public class ProductionCompanyContract : BaseContract
     [JsonPropertyName("origin_country")]
     public string OriginCountry { get; set; }
 
-    public ProductionCompany ToProductionCompany() => new(Id, Name, LogoPath, OriginCountry);
+    public ProductionCompany ToProductionCompany() => new(Id, Name, LogoPath ?? string.Empty, OriginCountry ?? string.Empty);
 
     public override string ToString()
     {

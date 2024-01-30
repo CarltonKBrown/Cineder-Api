@@ -1,5 +1,6 @@
 ﻿using Cineder_Api.Core.Config;
 using Cineder_Api.Core.Entities;
+using Cineder_Api.Core.Util;
 using Microsoft.Extensions.Options;
 using PreventR;
 using System.Net;
@@ -64,7 +65,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private async Task<SearchResult<Keyword>> GetKeywordsAsync(string keyword, int pageNum = 1)
         {
-            var url = $"/search/keyword?query={keyword.Trim()}&page={pageNum}&{AddApiKey}&{AddLang}";
+            var url = $"search/keyword?query={keyword.Trim()}&page={pageNum}&{AddApiKey()}&{AddLang()}";
 
             var client = _httpClientFactory.CreateClient(_options.ClientName);
 
@@ -78,37 +79,47 @@ namespace Cineder_Api.Infrastructure.Clients
 
         }
 
-        private protected async Task<T> SendGetAsync<T>(string requestUrl) where T : class, new()
+        private protected async Task<string> SendGetAsync(string requestUrl)
         {
-            try
+            var client = _httpClientFactory.CreateClient(_options.ClientName);
+
+            client.Prevent(nameof(client)).Null();
+
+            client.BaseAddress!.Prevent(nameof(client.BaseAddress)).Null();
+
+            var response = await client.GetAsync(requestUrl);
+
+            if (!response.StatusCode.Equals(HttpStatusCode.OK))
             {
-                var client = _httpClientFactory.CreateClient(_options.ClientName);
-
-                client.Prevent(nameof(client)).Null();
-
-                client.BaseAddress!.Prevent(nameof(client.BaseAddress)).Null();
-
-                var response = await client.GetAsync(requestUrl);
-
-                if (!response.StatusCode.Equals(HttpStatusCode.OK))
-                {
-                    throw new HttpRequestException("API did not respond with a 200 OK.");
-                }
-
-                var responseBody = await response.Content.ReadAsStringAsync();
-
-                responseBody.Prevent(nameof(responseBody)).NullOrWhiteSpace();
-
-                var responseObj = JsonSerializer.Deserialize<T>(responseBody);
-
-                responseObj!.Prevent(nameof(responseObj)).Null();
-
-                return responseObj!;
+                throw new HttpRequestException("API did not respond with a 200 OK.");
             }
-            catch (Exception)
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            responseBody.Prevent(nameof(responseBody)).NullOrWhiteSpace();
+
+            return responseBody;
+        }
+
+        private protected static bool TryParse<T>(string jsonString, out T output) where T: new()
+        {
+            output = new();
+
+            if (string.IsNullOrWhiteSpace(jsonString) || !JsonUtil.IsValidJson(jsonString))
             {
-                throw;
+                return false;
             }
+
+            var parsedValue = JsonSerializer.Deserialize<T>(jsonString);
+
+            if (parsedValue == null)
+            {
+                return false;
+            }
+
+            output = parsedValue;
+
+            return true;
         }
 
         private protected string AddApiKey()
@@ -123,7 +134,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
         private protected string AddDefaults(int pageNum = 1)
         {
-            return $"{AddPage(pageNum)}&{AddApiKey}&{AddLang}&{AddIncludeAdult}&{AddIncludeVideo}";
+            return $"{AddPage(pageNum)}&{AddApiKey()}&{AddLang()}&{AddIncludeAdult()}&{AddIncludeVideo()}";
         }
 
         private protected static string AddIncludeAdult(bool includeAdult = false)

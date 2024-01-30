@@ -10,8 +10,8 @@ namespace Cineder_Api.Core.Entities
         {
             AirDate = airDate;
             EpisodeCount = episodeCount;
-            Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
-            PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
+            Overview = overview.Prevent(nameof(overview)).Null();
+            PosterPath = posterPath.Prevent(nameof(posterPath)).Null();
             SeasonNumber = seasonNumber;
         }
 

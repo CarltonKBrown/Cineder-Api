@@ -1,0 +1,2 @@
+###
+GET http://localhost:7071/api/movies/similar/603?page=1

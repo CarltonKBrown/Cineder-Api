@@ -6,19 +6,19 @@ namespace Cineder_Api.Core.Entities
 {
     public class CreatedBy : Entity
     {
-        public CreatedBy(long id, string name, string creditId, string gender, string profilePath) : base(id, name)
+        public CreatedBy(long id, string name, string creditId, int gender, string profilePath) : base(id, name)
         {
-            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            CreditId = creditId.Prevent(nameof(creditId)).Null();
             Gender = gender;
-            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            ProfilePath = profilePath ?? "";
         }
 
-        public CreatedBy() : this(0, string.Empty, string.Empty, string.Empty, string.Empty)
+        public CreatedBy() : this(0, string.Empty, string.Empty, 0, string.Empty)
         {
 
         }
         public string CreditId { get; protected set; }
-        public string Gender { get; protected set; }
+        public int Gender { get; protected set; }
         public string ProfilePath { get; protected set; }
 
         public override string ToString()

@@ -1,34 +1,34 @@
 ﻿using Cineder_Api.Core.Util;
 using PreventR;
-using System.Linq;
 using System.Text.Json;
 
 namespace Cineder_Api.Core.Entities
 {
     public class Cast : Entity
     {
-        public Cast(long id, string name, long castId, string character, string creditId, int gender, int order, string profilePath) : base(id, name)
+        public Cast(long id, string name, string character, string creditId, int gender, int order, string profilePath, bool adult, string knownForDepartment, double popularity) : base(id, name)
         {
-            CastId = castId;
-            Character = character.Prevent(nameof(character)).NullOrWhiteSpace();
-            CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
+            Character = character.Prevent(nameof(character)).Null();
+            CreditId = creditId.Prevent(nameof(creditId)).Null();
             Gender = gender;
             Order = order;
-            ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+            ProfilePath = profilePath;
         }
 
-        public Cast() : this(0, string.Empty, 0, string.Empty, string.Empty, 0, 0, string.Empty)
+        public Cast() : this(0, string.Empty, string.Empty, string.Empty, 0, 0, string.Empty, false, string.Empty, 0.0)
         {
 
         }
 
-        public long CastId { get; protected set; }
         public string Character { get; protected set; }
         public string CreditId { get; protected set; }
         public int Gender { get; protected set; }
         public int Order { get; protected set; }
         public string ProfilePath { get; protected set; }
 
+        public bool Adult { get; protected set; }
+        public string KnownForDepartment { get; protected set; }
+        public double Popularity { get; protected set; }
         public override string ToString()
         {
             return JsonSerializer.Serialize(this, JsonUtil.Indent);

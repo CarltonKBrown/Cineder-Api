@@ -1,0 +1,2 @@
+###
+GET http://localhost:7071/api/series/similar/50956 HTTP/1.1

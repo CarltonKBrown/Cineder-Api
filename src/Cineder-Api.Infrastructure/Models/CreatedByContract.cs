@@ -9,15 +9,15 @@ namespace Cineder_Api.Infrastructure;
 
 internal class CreatedByContract : BaseContract
 {
-    public CreatedByContract(long id, string creditId, string name, string gender, string profilePath) : base(id)
+    public CreatedByContract(long id, string creditId, string name, int gender, string profilePath) : base(id)
     {
-        CreditId = creditId.Prevent(nameof(creditId)).NullOrWhiteSpace();
-        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
-        Gender = gender.Prevent(nameof(gender)).NullOrWhiteSpace();
-        ProfilePath = profilePath.Prevent(nameof(profilePath)).NullOrWhiteSpace();
+        CreditId = creditId.Prevent(nameof(creditId)).Null();
+        Name = name.Prevent(nameof(name)).Null();
+        Gender = gender;
+        ProfilePath = profilePath.Prevent(nameof(profilePath)).Null();
     }
 
-    public CreatedByContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty) { }
+    public CreatedByContract() : this(0, string.Empty, string.Empty, 0, string.Empty) { }
 
     [JsonPropertyName("credit_id")]
     public string CreditId { get; set; }
@@ -26,7 +26,7 @@ internal class CreatedByContract : BaseContract
     public string Name { get; set; }
 
     [JsonPropertyName("gender")]
-    public string Gender { get; set; }
+    public int Gender { get; set; }
 
     [JsonPropertyName("profile_path")]
     public string ProfilePath { get; set; }

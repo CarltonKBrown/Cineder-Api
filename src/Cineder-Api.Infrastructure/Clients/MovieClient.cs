@@ -26,13 +26,19 @@ namespace Cineder_Api.Infrastructure.Clients
             {
                 _logger.LogInformation($"Attempting to get movie by Id: '{movieId}'");
 
-                var url = $"/movie/{movieId}?{AddApiKey}&{AddLang}";
+                var url = $"movie/{movieId}?{AddApiKey()}&{AddLang()}&append_to_response=videos,credits";
 
                 _logger.LogInformation($"URL to get movie by Id: {movieId}  - url: '{url}'");
 
-                var response = await SendGetAsync<MovieDetailContract>(url);
+                var jsonStringResponse = await SendGetAsync(url);
 
-                var responseMovieId = response?.Id ?? 0;
+                if (!TryParse<MovieDetailContract>(jsonStringResponse, out var movieDetailContract))
+                {
+                    _logger.LogError("Could not parse results!");
+
+                    return new();
+                }
+                var responseMovieId = movieDetailContract?.Id ?? 0;
 
                 if (responseMovieId < 1 || responseMovieId != movieId)
                 {
@@ -41,7 +47,7 @@ namespace Cineder_Api.Infrastructure.Clients
                     return new();
                 }
 
-                var movieDetails = response?.ToMovieDetail();
+                var movieDetails = movieDetailContract?.ToMovieDetail();
 
                 _logger.LogInformation($"Successfully retrieved details for movie having Id: '{movieId}'");
 
@@ -57,50 +63,84 @@ namespace Cineder_Api.Infrastructure.Clients
 
         public async Task<SearchResult<MoviesResult>> GetMoviesByTitleAsync(string? searchText, int pageNum = 1)
         {
-            var searchQuery = AddQuery(searchText);
+            try
+            {
+                var searchQuery = AddQuery(searchText);
 
-            if (string.IsNullOrWhiteSpace(searchQuery)) return new();
+                if (string.IsNullOrWhiteSpace(searchQuery)) return new();
 
-            var url = $"/search/movie?{searchQuery}&{AddDefaults(pageNum)}";
+                var url = $"search/movie?{searchQuery}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Name);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Name);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies by title and/or page requested. Title detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
         public async Task<SearchResult<MoviesResult>> GetMoviesByKeywordsAsync(string? searchText, int pageNum = 1)
         {
-            var keywordIds = await GetKeywordIds(searchText);
+            try
+            {
+                var keywordIds = await GetKeywordIds(searchText);
 
-            if (!keywordIds.Any()) return new();
+                if (!keywordIds.Any()) return new();
 
-            var url = $"/discover/movie?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
+                var url = $"discover/movie?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Keyword);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.Keyword);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies by keywords and/or page requested. keywords detected: '{searchText}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
 
         public async Task<SearchResult<MoviesResult>> GetMoviesSimilarAsync(long movieId, int pageNum = 1)
         {
-            if (movieId < 1) return new();
+            try
+            {
+                if (movieId < 1) return new();
 
-            var url = $"/movie/{movieId}/recommendations?{AddPage(pageNum)}";
+                var url = $"movie/{movieId}/recommendations?{AddDefaults(pageNum)}";
 
-            var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
+                var parsedResponse = await ParseSearchResultMovieResponse(url, SearchType.None);
 
-            return parsedResponse ?? new();
+                return parsedResponse ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to get movies similar to Movie Id and/or page requested. Movie Id detected: '{movieId}'; Page detected: '{pageNum}'");
+
+                return new();
+            }
         }
 
 
         private async Task<SearchResult<MoviesResult>> ParseSearchResultMovieResponse(string url, SearchType searchType)
         {
-            var response = await SendGetAsync<SearchResultContract<MovieResultContract>>(url);
+            var jsonStringResponse = await SendGetAsync(url);
 
-            var hasResults = response?.Results?.Any() ?? false;
+            if (!TryParse<SearchResultContract<MovieResultContract>>(jsonStringResponse, out var movieSearchResults))
+            {
+                _logger.LogError("Could not parse results!");
 
-            var totalResults = response?.TotalResults ?? 0;
+                return new();
+            }
+
+            var hasResults = movieSearchResults?.Results?.Any() ?? false;
+
+            var totalResults = movieSearchResults?.TotalResults ?? 0;
 
             if (!hasResults || totalResults < 1)
             {
@@ -109,9 +149,9 @@ namespace Cineder_Api.Infrastructure.Clients
                 return new();
             }
 
-            var parsedResults = response!.Results.Select(x => x.ToMovieResult(searchType));
+            var parsedResults = movieSearchResults!.Results.Select(x => x.ToMovieResult(searchType));
 
-            var parsedResponse = response.ToSearchResult(parsedResults);
+            var parsedResponse = movieSearchResults.ToSearchResult(parsedResults);
 
             return parsedResponse ?? new();
         }

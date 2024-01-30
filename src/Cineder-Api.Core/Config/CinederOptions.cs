@@ -8,6 +8,6 @@
         public string ClientName { get; set; } = string.Empty;
         public int MaxPages { get; set; } = 1;
 
-        public static string SectionName => "";
+        public static string SectionName => "Cineder";
     }
 }

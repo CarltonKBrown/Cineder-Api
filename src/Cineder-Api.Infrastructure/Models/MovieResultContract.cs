@@ -12,15 +12,15 @@ internal class MovieResultContract : BaseContract
 {
     public MovieResultContract(long id, string posterPath, bool adult, string overview, string releaseDate, IEnumerable<long> genreIds, string originalTitle, string originalLanguage, string title, string backdropPath, double popularity, int voteCount, bool video, double voteAverage) : base(id)
     {
-        PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
+        PosterPath = posterPath.Prevent(nameof(posterPath)).Null();
         Adult = adult;
-        Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
-        ReleaseDate = releaseDate.Prevent(nameof(releaseDate)).NullOrWhiteSpace();
+        Overview = overview.Prevent(nameof(overview)).Null();
+        ReleaseDate = releaseDate.Prevent(nameof(releaseDate)).Null();
         GenreIds = genreIds.Prevent(nameof(genreIds)).Null().Value;
-        OriginalTitle = originalTitle.Prevent(nameof(originalTitle)).NullOrWhiteSpace();
-        OriginalLanguage = originalLanguage.Prevent(nameof(originalLanguage)).NullOrWhiteSpace();
-        Title = title.Prevent(nameof(title)).NullOrWhiteSpace();
-        BackdropPath = backdropPath.Prevent(nameof(backdropPath)).NullOrWhiteSpace();
+        OriginalTitle = originalTitle.Prevent(nameof(originalTitle)).Null();
+        OriginalLanguage = originalLanguage.Prevent(nameof(originalLanguage)).Null();
+        Title = title.Prevent(nameof(title)).Null();
+        BackdropPath = backdropPath.Prevent(nameof(backdropPath)).Null();
         Popularity = popularity;
         VoteCount = voteCount;
         Video = video;
@@ -70,7 +70,9 @@ internal class MovieResultContract : BaseContract
 
     public MoviesResult ToMovieResult(SearchType searchType)
     {
-        if (!DateTime.TryParse(ReleaseDate, out DateTime releaseDate))
+        var releaseDate = DateTime.Now;
+
+        if (!string.IsNullOrWhiteSpace(ReleaseDate) && !DateTime.TryParse(ReleaseDate, out releaseDate))
         {
             throw new InvalidCastException("Could not parse movie result release date to DateTime.");
         }

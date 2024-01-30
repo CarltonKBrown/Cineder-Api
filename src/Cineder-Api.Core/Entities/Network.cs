@@ -8,8 +8,8 @@ namespace Cineder_Api.Core.Entities
     {
         public Network(long id, string name, string logoPath, string originCountry) : base(id, name)
         {
-            LogoPath = logoPath.Prevent(nameof(logoPath)).NullOrWhiteSpace();
-            OriginCountry = originCountry.Prevent(nameof(originCountry)).NullOrWhiteSpace();
+            LogoPath = logoPath.Prevent(nameof(logoPath)).Null();
+            OriginCountry = originCountry.Prevent(nameof(originCountry)).Null();
         }
 
         public Network() : this(0, string.Empty, string.Empty, string.Empty) { }

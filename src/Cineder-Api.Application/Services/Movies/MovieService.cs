@@ -41,11 +41,22 @@ namespace Cineder_Api.Application.Services.Movies
             {
                 request.Prevent().Null();
 
-                var titleMovies = await _movieClient.GetMoviesByTitleAsync(request.SearchText, request.PageNum);
+                var movieSearchRequests = new[]
+                {
+                    _movieClient.GetMoviesByTitleAsync(request.SearchText, request.PageNum),
+                    _movieClient.GetMoviesByKeywordsAsync(request.SearchText, request.PageNum)
+                };
 
-                var keywordMovies = await _movieClient.GetMoviesByKeywordsAsync(request.SearchText, request.PageNum);
+                await Task.WhenAll(movieSearchRequests);
 
-                var searchResults = new[] { titleMovies, keywordMovies };
+                var searchResults = new List<SearchResult<MoviesResult>>();
+
+                foreach (var searchRequest in movieSearchRequests)
+                {
+                    var searchResult = await searchRequest;
+
+                    searchResults.Add(searchResult);
+                }
 
                 var results = searchResults.Aggregate(new SearchResult<MoviesResult>(), SearchResult<MoviesResult>.SearchResultAgregator);
 

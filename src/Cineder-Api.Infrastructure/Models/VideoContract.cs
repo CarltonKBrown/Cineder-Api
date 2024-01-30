@@ -6,20 +6,26 @@ using System.Text.Json.Serialization;
 
 namespace Cineder_Api.Infrastructure.Models
 {
-    public class VideoContract : BaseContract
+    public class VideoContract
     {
-        public VideoContract(long id, string name, string isoLang, string isoRegion, string key, string site, int size, string type) : base(id)
+        public VideoContract(string id, string name, string isoLang, string isoRegion, string key, string site, int size, string type, bool official, DateTime publishedAt)
         {
-            Name = name.Prevent().NullOrWhiteSpace();
-            IsoLang = isoLang.Prevent().NullOrWhiteSpace();
-            IsoRegion = isoRegion.Prevent().NullOrWhiteSpace();
-            Key = key.Prevent().NullOrWhiteSpace();
-            Site = site.Prevent().NullOrWhiteSpace();
+            Id = id.Prevent(nameof(id)).Null();
+            Name = name.Prevent(nameof(name)).Null();
+            IsoLang = isoLang.Prevent(nameof(isoLang)).Null();
+            IsoRegion = isoRegion.Prevent().Null();
+            Key = key.Prevent().Null();
+            Site = site.Prevent().Null();
             Size = size;
-            Type = type.Prevent().NullOrWhiteSpace();
+            Type = type.Prevent().Null();
+            PublishedAt = publishedAt;
+            Official = official;
         }
 
-        public VideoContract() : this(0, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty) { }
+        public VideoContract() : this(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty, false, DateTime.Now) { }
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
 
         [JsonPropertyName("iso_3166_1")]
         public string IsoLang { get; set; }
@@ -42,8 +48,14 @@ namespace Cineder_Api.Infrastructure.Models
         [JsonPropertyName("type")]
         public string Type { get; set; }
 
+        [JsonPropertyName("official")]
+        public bool Official { get; set; }
 
-        public Video ToVideo() => new (Id, Name, IsoLang, IsoRegion, Key, Site, Size, Type);
+        [JsonPropertyName("published_at")]
+        public DateTime PublishedAt { get; set; }
+
+
+        public Video ToVideo() => new (Id, Name, IsoLang, IsoRegion, Key, Site, Size, Type, Official, PublishedAt);
 
         public override string ToString()
         {

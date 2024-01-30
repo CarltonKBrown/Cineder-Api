@@ -11,11 +11,11 @@ internal class SeasonsContract : BaseContract
 {
     public SeasonsContract(long id, string airDate, int episodeCount, string name, string overview, string posterPath, int seasonNumber) : base(id)
     {
-        AirDate = airDate.Prevent(nameof(airDate)).NullOrWhiteSpace();
+        AirDate = airDate.Prevent(nameof(airDate)).Null();
         EpisodeCount = episodeCount;
-        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
-        Overview = overview.Prevent(nameof(overview)).NullOrWhiteSpace();
-        PosterPath = posterPath.Prevent(nameof(posterPath)).NullOrWhiteSpace();
+        Name = name.Prevent(nameof(name)).Null();
+        Overview = overview.Prevent(nameof(overview)).Null();
+        PosterPath = posterPath.Prevent(nameof(posterPath)).Null();
         SeasonNumber = seasonNumber;
     }
 

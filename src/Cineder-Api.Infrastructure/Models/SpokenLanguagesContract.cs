@@ -10,8 +10,8 @@ internal class SpokenLanguagesContract:BaseContract
 {
     public SpokenLanguagesContract(long id, string isoRegion, string name) : base(id)
     {
-        IsoRegion = isoRegion.Prevent(nameof(isoRegion)).NullOrWhiteSpace();
-        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+        IsoRegion = isoRegion.Prevent(nameof(isoRegion)).Null();
+        Name = name.Prevent(nameof(name)).Null();
     }
 
     public SpokenLanguagesContract() : this(0, string.Empty, string.Empty){}

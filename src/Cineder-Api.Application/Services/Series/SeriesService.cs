@@ -28,13 +28,24 @@ namespace Cineder_Api.Application.Services.Series
             {
                 request.Prevent(nameof(request)).Null();
 
-                var titleSeries = await _client.GetSeriesByTitleAsync(request.SearchText, request.PageNum);
+                var seriesSearchRequests = new[]
+                {
+                    _client.GetSeriesByTitleAsync(request.SearchText, request.PageNum),
+                    _client.GetSeriesKeywordsAsync(request.SearchText, request.PageNum)
+                };
 
-                var keywordSeries = await _client.GetSeriesKeywordsAsync(request.SearchText, request.PageNum);
+                await Task.WhenAll(seriesSearchRequests);
 
-                var seriesResults = new[] {titleSeries, keywordSeries};
+                var searchReults = new List<SearchResult<SeriesResult>>();
 
-                var results = seriesResults.Aggregate(new SearchResult<SeriesResult>(), SearchResult<SeriesResult>.SearchResultAgregator<SeriesResult>);
+                foreach (var searchRequest in seriesSearchRequests)
+                {
+                    var searchResult = await searchRequest;
+
+                    searchReults.Add(searchResult);
+                }
+
+                var results = searchReults.Aggregate(new SearchResult<SeriesResult>(), SearchResult<SeriesResult>.SearchResultAgregator);
 
                 return results;
             }

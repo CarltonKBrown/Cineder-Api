@@ -11,7 +11,7 @@ internal class KeywordContract : BaseContract
 {
     public KeywordContract(long id, string name) : base(id)
     {
-        Name = name.Prevent((nameof(name))).NullOrWhiteSpace();
+        Name = name.Prevent((nameof(name))).Null();
     }
 
     public KeywordContract() : this(0, string.Empty) { }
