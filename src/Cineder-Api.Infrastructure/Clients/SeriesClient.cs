@@ -72,7 +72,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
                 if (string.IsNullOrWhiteSpace(searchQuery)) return new();
 
-                var url = $"/search/tv?{searchQuery}&{AddDefaults(pageNum)}";
+                var url = $"search/tv?{searchQuery}&{AddDefaults(pageNum)}";
 
                 var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Name);
 
@@ -94,7 +94,7 @@ namespace Cineder_Api.Infrastructure.Clients
 
                 if (!keywordIds.Any()) return new();
 
-                var url = $"/discover/tv?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
+                var url = $"discover/tv?{AddWithKeywords(keywordIds)}&{AddDefaults(pageNum)}";
 
                 var parsedResponse = await ParseSearchResultSeriesResponse(url, SearchType.Keyword);
 

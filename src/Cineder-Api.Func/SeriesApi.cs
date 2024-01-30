@@ -48,5 +48,32 @@ namespace Cineder_Api.Func
                 };
             }
         }
+
+        [Function("GetSeries")]
+        public async Task<IActionResult> GetSeries([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "series")] HttpRequest req, [FromQuery] string search, [FromQuery] int page = 1)
+        {
+            try
+            {
+                var request = new GetSeriesRequest(search, page);
+
+                var response = await _seriesService.GetSeriesAsync(request);
+
+                if ((response?.TotalResults ?? 0) < 1)
+                {
+                    return new NotFoundObjectResult(response);
+                }
+
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetSeries API could not return a result");
+
+                return new ObjectResult(new SeriesDetail())
+                {
+                    StatusCode = 500,
+                };
+            }
+        }
     }
 }
