@@ -9,8 +9,8 @@ internal class ProductionCountriesContract
 {
     public ProductionCountriesContract(string isoLang, string name)
     {
-        IsoLang = isoLang.Prevent(nameof(isoLang)).NullOrWhiteSpace();
-        Name = name.Prevent(nameof(name)).NullOrWhiteSpace();
+        IsoLang = isoLang.Prevent(nameof(isoLang)).Null();
+        Name = name.Prevent(nameof(name)).Null();
     }
 
     public ProductionCountriesContract() : this(string.Empty, string.Empty)
