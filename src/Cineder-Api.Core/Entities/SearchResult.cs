@@ -30,7 +30,7 @@ namespace Cineder_Api.Core.Entities
 
             acc.Page = acc.Page >= curr.Page ? acc.Page : curr.Page;
 
-            acc.TotalPages += curr.TotalPages;
+            acc.TotalPages = acc.TotalPages >= curr.TotalPages ? acc.TotalPages : curr.TotalPages;
 
             acc.Results = acc.Results.Concat(curr.Results).Distinct();
 

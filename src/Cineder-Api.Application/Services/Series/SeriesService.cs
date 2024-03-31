@@ -47,7 +47,9 @@ namespace Cineder_Api.Application.Services.Series
 
                 var results = searchReults.Aggregate(new SearchResult<SeriesResult>(), SearchResult<SeriesResult>.SearchResultAgregator);
 
-                return results;
+				results.Results = results.Results.Select((x, i) => { x.Idx = i; return x; });
+
+				return results;
             }
             catch (Exception ex)
             {

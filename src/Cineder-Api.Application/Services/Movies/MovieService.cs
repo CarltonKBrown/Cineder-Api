@@ -60,7 +60,9 @@ namespace Cineder_Api.Application.Services.Movies
 
                 var results = searchResults.Aggregate(new SearchResult<MoviesResult>(), SearchResult<MoviesResult>.SearchResultAgregator);
 
-                return results;
+				results.Results = results.Results.Select((x, i) => { x.Idx = i; return x; });
+
+				return results;
             }
             catch (Exception ex)
             {
