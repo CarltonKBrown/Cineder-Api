@@ -6,12 +6,12 @@ namespace Cineder_Api.Core.Entities
 {
     public class MovieDetail : Entity, IComparable<MovieDetail>
     {
-        public MovieDetail(long id, string name, double budget, IEnumerable<Genre> genres, string overview, string postePath, IEnumerable<ProductionCompany> productionCompanies, DateTime releaseDate, double revenue, double runtime, double voteAverage, IEnumerable<Video> videos, IEnumerable<Cast> casts) : base(id, name)
+        public MovieDetail(long id, string name, double budget, IEnumerable<Genre> genres, string overview, string posterPath, IEnumerable<ProductionCompany> productionCompanies, DateTime releaseDate, double revenue, double runtime, double voteAverage, IEnumerable<Video> videos, IEnumerable<Cast> casts) : base(id, name)
         {
             Budget = budget;
             Genres = genres.Prevent(nameof(genres)).Null().Value;
             Overview = overview.Prevent(nameof(overview)).Null();
-            PostePath = postePath.Prevent(nameof(postePath)).Null();
+            PosterPath = posterPath.Prevent(nameof(posterPath)).Null();
             ProductionCompanies = productionCompanies.Prevent(nameof(productionCompanies)).Null().Value;
             ReleaseDate = releaseDate;
             Revenue = revenue;
@@ -26,7 +26,7 @@ namespace Cineder_Api.Core.Entities
         public double Budget { get; protected set; }
         public IEnumerable<Genre> Genres { get; protected set; }
         public string Overview { get; protected set; }
-        public string PostePath { get; protected set; }
+        public string PosterPath { get; protected set; }
         public IEnumerable<ProductionCompany> ProductionCompanies { get; protected set; }
         public DateTime ReleaseDate { get; protected set; }
         public double Revenue { get; protected set; }
